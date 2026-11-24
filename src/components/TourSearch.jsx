@@ -20,7 +20,7 @@ const SAMPLE_RESULTS = [
     price: '54 800 ₽',
     oldPrice: '72 000 ₽',
     operator: 'Coral Travel',
-    image: '/images/destinations/egypt.jpg',
+    image: './images/destinations/egypt.jpg',
     tags: ['Первая линия', 'Собственный пляж', 'Песчаный вход']
   },
   {
@@ -39,7 +39,7 @@ const SAMPLE_RESULTS = [
     price: '68 400 ₽',
     oldPrice: '89 000 ₽',
     operator: 'Anex Tour',
-    image: '/images/destinations/turkey.jpg',
+    image: './images/destinations/turkey.jpg',
     tags: ['Подогреваемый бассейн', 'Премиум сервис']
   },
   {
@@ -58,7 +58,7 @@ const SAMPLE_RESULTS = [
     price: '79 500 ₽',
     oldPrice: '105 000 ₽',
     operator: 'Pegas Touristik',
-    image: '/images/destinations/uae.jpg',
+    image: './images/destinations/uae.jpg',
     tags: ['Оманский залив', 'Горный пейзаж']
   },
   {
@@ -77,7 +77,7 @@ const SAMPLE_RESULTS = [
     price: '98 000 ₽',
     oldPrice: '135 000 ₽',
     operator: 'Fun&Sun',
-    image: '/images/destinations/thailand.jpg',
+    image: './images/destinations/thailand.jpg',
     tags: ['Пляж Карон', 'Аквапарк для детей']
   },
   {
@@ -96,7 +96,7 @@ const SAMPLE_RESULTS = [
     price: '148 000 ₽',
     oldPrice: '195 000 ₽',
     operator: 'Biblio Globus',
-    image: '/images/destinations/maldives.jpg',
+    image: './images/destinations/maldives.jpg',
     tags: ['Водные виллы', 'Скоростной катер']
   },
   {
@@ -115,7 +115,7 @@ const SAMPLE_RESULTS = [
     price: '118 000 ₽',
     oldPrice: '150 000 ₽',
     operator: 'Pegas Touristik',
-    image: '/images/destinations/cuba.jpg',
+    image: './images/destinations/cuba.jpg',
     tags: ['Белоснежный песок', 'Карибское море']
   }
 ];
