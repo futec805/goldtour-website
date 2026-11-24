@@ -15,7 +15,8 @@ import {
   CreditCard,
   Languages,
   Waves,
-  Sun
+  MessageCircle,
+  Eye
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { countryGuideData } from '../data/countryGuideData';
@@ -23,151 +24,178 @@ import { countryGuideData } from '../data/countryGuideData';
 export default function PopularDestinations({ onSelectTour }) {
   const { lang, t } = useLanguage();
   
-  // Selected Country ID (defaults to 'turkey' so user immediately sees rich content)
+  // Level 1: Selected Country ID
   const [selectedCountryId, setSelectedCountryId] = useState('turkey');
   
-  // Showcase reference for smooth scrolling when a country box is clicked
-  const showcaseRef = useRef(null);
+  // Level 2 -> 3: Selected City ID inside the country
+  const [selectedCityId, setSelectedCityId] = useState('antalya');
+
+  // Active enlarged photo for modal view (if user clicks any photo)
+  const [lightboxPhoto, setLightboxPhoto] = useState(null);
+
+  // References for smooth scrolling
+  const countryHubRef = useRef(null);
+  const cityDetailRef = useRef(null);
 
   // Active country object
   const activeCountry = useMemo(() => {
     if (!selectedCountryId) return null;
-    return countryGuideData.find(c => c.id === selectedCountryId) || null;
+    return countryGuideData.find(c => c.id === selectedCountryId) || countryGuideData[0];
   }, [selectedCountryId]);
+
+  // Active city object
+  const activeCity = useMemo(() => {
+    if (!activeCountry) return null;
+    return activeCountry.cities.find(c => c.id === selectedCityId) || activeCountry.cities[0];
+  }, [activeCountry, selectedCityId]);
 
   const handleSelectCountry = (countryId) => {
     setSelectedCountryId(countryId);
+    const country = countryGuideData.find(c => c.id === countryId);
+    if (country && country.cities.length > 0) {
+      setSelectedCityId(country.cities[0].id);
+    } else {
+      setSelectedCityId(null);
+    }
     setTimeout(() => {
-      if (showcaseRef.current) {
-        showcaseRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (countryHubRef.current) {
+        countryHubRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 100);
   };
 
-  const handleBookCity = (city, countryName) => {
+  const handleSelectCity = (cityId) => {
+    setSelectedCityId(cityId);
+    setTimeout(() => {
+      if (cityDetailRef.current) {
+        cityDetailRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 100);
+  };
+
+  const handleConsultation = (destinationName) => {
     if (onSelectTour) {
       onSelectTour({
-        hotel: `${t(city.name)} Resort & Spa`,
-        country: countryName,
-        city: t(city.name),
-        price: city.priceFrom,
+        hotel: destinationName,
+        country: t(activeCountry.name),
+        city: activeCity ? t(activeCity.name) : '',
+        price: 'По запросу',
         originalPrice: null,
-        nights: '7–10',
-        meal: lang === 'ru' ? 'Всё включено / Завтраки' : 'All-Inclusive / Breakfast'
+        nights: '7–14',
+        meal: lang === 'ru' ? 'Подбор индивидуального тура' : 'Custom travel itinerary'
       });
     }
   };
 
   return (
-    <section id="destinations" className="py-20 bg-slate-50 border-t border-slate-200">
+    <section id="destinations" className="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4">
         
-        {/* Section Header */}
+        {/* ========================================================= */}
+        {/* SECTION HEADER                                            */}
+        {/* ========================================================= */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-700 text-xs font-semibold mb-3">
             <Globe2 size={14} className="text-gold-600" />
             <span>
-              {lang === 'ru' ? 'Популярные направления для туристов из РФ' : 'Top Destinations for Russian Travelers'}
+              {lang === 'ru' ? 'Интерактивный атлас путешествий' : 'Interactive Travel Atlas'}
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-heading font-bold text-navy-950 mb-3">
-            {lang === 'ru' ? 'Куда поехать на море: страны и курорты' : 'Where to Vacation: Countries & Beach Resorts'}
+            {lang === 'ru' ? 'Страны и знаменитые города' : 'Countries & Famous Cities'}
           </h2>
           <p className="text-slate-600 text-sm sm:text-base">
             {lang === 'ru' 
-              ? 'Выберите страну, чтобы посмотреть пляжи, узнать правила въезда, работу карт и вылеты из Нижнего Новгорода и Москвы.'
-              : 'Click any country below to explore beaches, entry rules, payment options, and direct flights from Russia.'}
+              ? 'Выберите страну, чтобы узнать о ней и посмотреть фотографии, затем выберите любой знаменитый город для подробного знакомства с его пляжами и достопримечательностями.'
+              : 'Select a country to explore overview and photos, then select any famous city to discover details and top sights.'}
           </p>
         </div>
 
         {/* ========================================================= */}
-        {/* SMALL BOXES WITH BEACH PHOTO GRID (10 Countries)         */}
+        {/* LEVEL 1: SMALL COUNTRY BOXES WITH PHOTO                   */}
         {/* ========================================================= */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 mb-8">
-          {countryGuideData.map((country) => {
-            const isSelected = country.id === selectedCountryId;
-            return (
-              <div
-                key={country.id}
-                onClick={() => handleSelectCountry(country.id)}
-                className={`group cursor-pointer rounded-2xl overflow-hidden bg-white border transition-all duration-300 shadow-sm hover:shadow-xl relative flex flex-col ${
-                  isSelected 
-                    ? 'ring-2 ring-gold-500 border-gold-500 shadow-md scale-[1.02]' 
-                    : 'border-slate-200 hover:border-gold-400 hover:-translate-y-1'
-                }`}
-              >
-                {/* Photo box with beach preview */}
-                <div className="relative h-28 sm:h-32 w-full overflow-hidden bg-slate-900">
-                  <img
-                    src={country.cardImage}
-                    alt={t(country.name)}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/20 to-transparent" />
-                  
-                  {/* Flag badge top-left */}
-                  <span className="absolute top-2 left-2 text-xl drop-shadow">
-                    {country.flag}
-                  </span>
+        <div className="mb-10">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-1 flex items-center justify-between">
+            <span>{lang === 'ru' ? '1. Выберите страну' : '1. Choose a Country'}</span>
+            <span className="text-[11px] text-slate-400">{countryGuideData.length} {lang === 'ru' ? 'стран' : 'countries'}</span>
+          </div>
 
-                  {/* Price badge top-right */}
-                  <span className="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold bg-black/60 text-gold-400 backdrop-blur-md">
-                    {lang === 'ru' ? `от ${country.priceFrom}` : `from ${country.priceFrom}`}
-                  </span>
-                </div>
-
-                {/* Country title & click hint */}
-                <div className={`p-3 flex items-center justify-between transition-colors ${
-                  isSelected ? 'bg-navy-950 text-white' : 'bg-white text-navy-950'
-                }`}>
-                  <div>
-                    <h4 className="font-heading font-bold text-xs sm:text-sm leading-tight">
-                      {t(country.name)}
-                    </h4>
-                    <span className={`text-[10px] ${
-                      isSelected ? 'text-gold-400' : 'text-slate-500'
-                    }`}>
-                      {country.cities.length} {lang === 'ru' ? 'курортов' : 'resorts'}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
+            {countryGuideData.map((country) => {
+              const isSelected = country.id === selectedCountryId;
+              return (
+                <div
+                  key={country.id}
+                  onClick={() => handleSelectCountry(country.id)}
+                  className={`group cursor-pointer rounded-2xl overflow-hidden bg-white border transition-all duration-300 shadow-sm hover:shadow-lg relative flex flex-col ${
+                    isSelected 
+                      ? 'ring-2 ring-gold-500 border-gold-500 shadow-md scale-[1.02]' 
+                      : 'border-slate-200 hover:border-gold-400 hover:-translate-y-0.5'
+                  }`}
+                >
+                  {/* Photo box */}
+                  <div className="relative h-28 sm:h-32 w-full overflow-hidden bg-slate-900">
+                    <img
+                      src={country.cardImage}
+                      alt={t(country.name)}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/20 to-transparent" />
+                    
+                    <span className="absolute top-2 left-2 text-xl drop-shadow">
+                      {country.flag}
                     </span>
+
+                    {isSelected && (
+                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold bg-gold-500 text-navy-950 shadow">
+                        ✓ {lang === 'ru' ? 'Выбрано' : 'Active'}
+                      </span>
+                    )}
                   </div>
 
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                    isSelected ? 'bg-gold-500 text-navy-950' : 'bg-slate-100 text-slate-400 group-hover:bg-gold-50 group-hover:text-gold-600'
+                  {/* Country Name */}
+                  <div className={`p-3 flex items-center justify-between transition-colors ${
+                    isSelected ? 'bg-navy-950 text-white' : 'bg-white text-navy-950'
                   }`}>
-                    <ChevronRight size={14} />
-                  </span>
+                    <div>
+                      <h4 className="font-heading font-bold text-xs sm:text-sm leading-tight">
+                        {t(country.name)}
+                      </h4>
+                      <span className={`text-[10px] ${
+                        isSelected ? 'text-gold-400' : 'text-slate-500'
+                      }`}>
+                        {country.cities.length} {lang === 'ru' ? 'городов' : 'cities'}
+                      </span>
+                    </div>
+
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
+                      isSelected ? 'bg-gold-500 text-navy-950' : 'bg-slate-100 text-slate-400 group-hover:bg-gold-50 group-hover:text-gold-600'
+                    }`}>
+                      <ChevronRight size={13} />
+                    </span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* ========================================================= */}
-        {/* EXPANDED COUNTRY & BEACH SHOWCASE                         */}
+        {/* LEVEL 2: COUNTRY INFORMATION & SEVERAL COUNTRY PHOTOS     */}
         {/* ========================================================= */}
         {activeCountry && (
           <div 
-            ref={showcaseRef}
-            className="bg-white rounded-3xl border-2 border-gold-500/40 shadow-xl overflow-hidden animate-fadeIn transition-all duration-300"
+            ref={countryHubRef}
+            className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden mb-12 animate-fadeIn transition-all duration-300"
           >
-            {/* Country Header & Info Banner */}
-            <div className="p-6 sm:p-8 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-950 text-white relative">
-              
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedCountryId(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors"
-                title={lang === 'ru' ? 'Закрыть' : 'Close'}
-              >
-                <X size={20} />
-              </button>
-
+            {/* Country Info Header */}
+            <div className="p-6 sm:p-8 bg-gradient-to-br from-navy-950 via-navy-900 to-navy-950 text-white">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-6 border-b border-white/10">
                 <div>
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className="text-3xl sm:text-4xl">{activeCountry.flag}</span>
-                    <h3 className="text-2xl sm:text-4xl font-heading font-bold text-white">
+                    <h3 className="text-2xl sm:text-3xl font-heading font-bold text-white">
                       {t(activeCountry.name)}
                     </h3>
                     <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold">
@@ -183,91 +211,36 @@ export default function PopularDestinations({ onSelectTour }) {
                 </div>
 
                 {/* Country Quick Badges */}
-                <div className="flex flex-row lg:flex-col gap-3 text-xs w-full lg:w-auto flex-shrink-0">
+                <div className="flex flex-row lg:flex-col gap-2.5 text-xs w-full lg:w-auto flex-shrink-0">
                   <div className="flex-1 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10">
-                    <span className="text-slate-400 block text-[11px]">{lang === 'ru' ? 'Вылеты:' : 'Flights:'}</span>
-                    <strong className="text-white text-xs sm:text-sm">✈ {t(activeCountry.flightTime)}</strong>
+                    <span className="text-slate-400 block text-[10px]">{lang === 'ru' ? 'Перелет:' : 'Flights:'}</span>
+                    <strong className="text-white text-xs">{t(activeCountry.flightTime)}</strong>
                   </div>
                   <div className="flex-1 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10">
-                    <span className="text-slate-400 block text-[11px]">{lang === 'ru' ? 'Сезон купания:' : 'Beach season:'}</span>
-                    <strong className="text-white text-xs sm:text-sm">☀️ {t(activeCountry.bestSeason)}</strong>
+                    <span className="text-slate-400 block text-[10px]">{lang === 'ru' ? 'Сезон:' : 'Season:'}</span>
+                    <strong className="text-white text-xs">☀️ {t(activeCountry.bestSeason)}</strong>
                   </div>
                 </div>
               </div>
 
-              {/* RUSSIAN TOURIST PRACTICAL GUIDE BOX */}
-              {activeCountry.russianTravelerTips && (
-                <div className="mt-6 pt-6 border-t border-white/10">
-                  <div className="text-xs font-bold text-gold-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <ShieldCheck size={16} />
-                    <span>{lang === 'ru' ? 'Памятка для туриста из России: оплата, вылеты и сервис' : 'Traveler Guide: Payments, Flights & Service'}</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {/* Money & Cards */}
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300 mb-1">
-                        <CreditCard size={14} />
-                        <span>{lang === 'ru' ? 'Карты и валюта' : 'Cards & Money'}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-300 leading-snug">
-                        {t(activeCountry.russianTravelerTips.money)}
-                      </p>
-                    </div>
-
-                    {/* Flights */}
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-sky-300 mb-1">
-                        <Plane size={14} />
-                        <span>{lang === 'ru' ? 'Вылеты из НН и Москвы' : 'Direct Flights'}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-300 leading-snug">
-                        {t(activeCountry.russianTravelerTips.flights)}
-                      </p>
-                    </div>
-
-                    {/* Language in hotels */}
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-300 mb-1">
-                        <Languages size={14} />
-                        <span>{lang === 'ru' ? 'Русский язык' : 'Russian Language'}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-300 leading-snug">
-                        {t(activeCountry.russianTravelerTips.language)}
-                      </p>
-                    </div>
-
-                    {/* Beaches & Sea */}
-                    <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-300 mb-1">
-                        <Waves size={14} />
-                        <span>{lang === 'ru' ? 'Пляжи и вход в воду' : 'Beaches & Waters'}</span>
-                      </div>
-                      <p className="text-[11px] text-slate-300 leading-snug">
-                        {t(activeCountry.russianTravelerTips.beaches)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* SEVERAL BEACH & RESORT IMAGES OF THAT COUNTRY */}
-              <div className="mt-6 pt-6 border-t border-white/10">
+              {/* SEVERAL PHOTOS OF THAT COUNTRY */}
+              <div className="mt-6">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2 text-xs font-bold text-gold-400 uppercase tracking-wider">
                     <Camera size={14} />
-                    <span>{lang === 'ru' ? `Пляжи и курорты: ${t(activeCountry.name)}` : `Beaches & Resorts of ${t(activeCountry.name)}`}</span>
+                    <span>{lang === 'ru' ? `Фотографии страны: ${t(activeCountry.name)}` : `Photos of ${t(activeCountry.name)}`}</span>
                   </div>
                   <span className="text-[11px] text-slate-400">
-                    {activeCountry.countryPhotos.length} {lang === 'ru' ? 'фотографий' : 'photos'}
+                    {activeCountry.countryPhotos.length} {lang === 'ru' ? 'фото' : 'photos'}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5 sm:gap-3">
                   {activeCountry.countryPhotos.map((photoUrl, pIdx) => (
                     <div 
                       key={pIdx} 
-                      className="h-28 sm:h-36 rounded-xl overflow-hidden border border-white/10 shadow-sm bg-black/40 group relative"
+                      onClick={() => setLightboxPhoto(photoUrl)}
+                      className="cursor-pointer h-24 sm:h-32 rounded-xl overflow-hidden border border-white/10 shadow-sm bg-black/40 group relative"
                     >
                       <img 
                         src={photoUrl} 
@@ -275,7 +248,9 @@ export default function PopularDestinations({ onSelectTour }) {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Eye size={16} className="text-white" />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -283,163 +258,216 @@ export default function PopularDestinations({ onSelectTour }) {
             </div>
 
             {/* ========================================================= */}
-            {/* BELOW THAT: SEVERAL FAMOUS CITIES / RESORTS               */}
+            {/* FAMOUS CITIES SELECTOR (BELOW COUNTRY INFORMATION)        */}
             {/* ========================================================= */}
-            <div className="p-6 sm:p-8 bg-white">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
+            <div className="p-6 sm:p-8 bg-slate-50 border-t border-slate-200">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Compass size={20} className="text-gold-500" />
-                  <h4 className="font-heading font-bold text-xl sm:text-2xl text-navy-950">
-                    {lang === 'ru' ? `Курорты и города: ${t(activeCountry.name)}` : `Famous Resorts in ${t(activeCountry.name)}`}
+                  <Compass size={18} className="text-gold-600" />
+                  <h4 className="font-heading font-bold text-lg sm:text-xl text-navy-950">
+                    {lang === 'ru' ? `Знаменитые города ${t(activeCountry.name)}:` : `Famous Cities in ${t(activeCountry.name)}:`}
                   </h4>
                 </div>
-                <span className="text-xs text-slate-500 font-medium">
-                  {activeCountry.cities.length} {lang === 'ru' ? 'локации' : 'locations'}
+                <span className="text-xs text-slate-500">
+                  {lang === 'ru' ? 'Нажмите на город для просмотра' : 'Click a city to view details'}
                 </span>
               </div>
 
-              {/* List of Famous Cities */}
-              <div className="space-y-8">
-                {activeCountry.cities.map((city) => (
-                  <div
-                    key={city.id}
-                    className="p-5 sm:p-6 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                      
-                      {/* Left: City Photo & Beach Gallery (5 cols) */}
-                      <div className="lg:col-span-5 space-y-3">
-                        <div className="relative h-60 sm:h-68 rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
-                          <img
-                            src={city.image}
-                            alt={t(city.name)}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-transparent to-black/20" />
-                          
-                          <div className="absolute top-3 left-3 flex items-center gap-2">
-                            <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-xs font-semibold">
-                              {t(city.tag)}
-                            </span>
-                            <span className="px-2.5 py-1 rounded bg-amber-500 text-navy-950 text-xs font-bold shadow">
+              {/* City Selector Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
+                {activeCountry.cities.map((city) => {
+                  const isCityActive = activeCity && activeCity.id === city.id;
+                  return (
+                    <div
+                      key={city.id}
+                      onClick={() => handleSelectCity(city.id)}
+                      className={`cursor-pointer rounded-2xl overflow-hidden bg-white border transition-all duration-200 shadow-sm hover:shadow-md ${
+                        isCityActive
+                          ? 'ring-2 ring-gold-500 border-gold-500 shadow-md scale-[1.01]'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center p-3 gap-3">
+                        <img 
+                          src={city.image} 
+                          alt={t(city.name)}
+                          className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                          loading="lazy" 
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <h5 className="font-heading font-bold text-sm text-navy-950 truncate">
+                              {t(city.name)}
+                            </h5>
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
                               {city.temp}
                             </span>
                           </div>
-
-                          <div className="absolute bottom-3 left-3 right-3 text-white">
-                            <h5 className="font-heading font-bold text-xl sm:text-2xl text-white">
-                              {t(city.name)}
-                            </h5>
-                            <span className="text-xs text-slate-300">
-                              ✈ {t(city.flight)}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Extra Beach Photos Gallery */}
-                        {city.photos && city.photos.length > 1 && (
-                          <div>
-                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                              <Waves size={12} className="text-cyan-600" />
-                              <span>{lang === 'ru' ? 'Фото пляжей курорта' : 'Beach Photos'}</span>
-                            </div>
-                            <div className="grid grid-cols-3 gap-2">
-                              {city.photos.map((ph, phIdx) => (
-                                <div key={phIdx} className="h-20 rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
-                                  <img src={ph} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform" loading="lazy" />
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Right: City Details, Beach Highlights, Top Sights & Booking Button (7 cols) */}
-                      <div className="lg:col-span-7 flex flex-col justify-between h-full space-y-4">
-                        <div>
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                            <h5 className="font-heading font-bold text-xl text-navy-950">
-                              {t(city.name)}
-                            </h5>
-                            <div className="text-right">
-                              <span className="text-[11px] text-slate-500 block">{lang === 'ru' ? 'Туры на человека' : 'Tours per person'}</span>
-                              <span className="text-gold-600 font-bold text-lg font-heading">
-                                {lang === 'ru' ? `от ${city.priceFrom}` : `from ${city.priceFrom}`}
-                              </span>
-                            </div>
-                          </div>
-
-                          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-3">
-                            {t(city.desc)}
+                          <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                            {t(city.tag)}
                           </p>
-
-                          {/* Specific Beach Highlight Box */}
-                          {city.beachInfo && (
-                            <div className="mb-4 p-3 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-950">
-                              <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-800 mb-1">
-                                <Waves size={14} />
-                                <span>{lang === 'ru' ? 'Особенности пляжей и купания:' : 'Beach & Swimming Features:'}</span>
-                              </div>
-                              <p className="text-xs text-cyan-900 leading-snug">
-                                {t(city.beachInfo)}
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Top Tourist Sights of That City */}
-                          <div>
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-navy-950 uppercase tracking-wider mb-2.5">
-                              <Sparkles size={14} className="text-gold-500" />
-                              <span>{lang === 'ru' ? 'Главные достопримечательности и экскурсии' : 'Top Sights & Excursions'}</span>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                              {city.attractions.map((att, aIdx) => (
-                                <div
-                                  key={aIdx}
-                                  className="p-3 rounded-xl bg-white border border-slate-200 hover:border-gold-400 transition-colors shadow-2xs"
-                                >
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span className="w-5 h-5 rounded-full bg-gold-500/15 text-gold-700 font-bold text-[11px] flex items-center justify-center flex-shrink-0">
-                                      {aIdx + 1}
-                                    </span>
-                                    <h6 className="font-semibold text-xs text-navy-950 truncate">
-                                      {t(att.name)}
-                                    </h6>
-                                  </div>
-                                  <p className="text-[11px] text-slate-600 leading-snug">
-                                    {t(att.desc)}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
+                          <div className="flex items-center justify-between mt-1 text-[11px] text-gold-600 font-semibold">
+                            <span>{isCityActive ? (lang === 'ru' ? '● Открыт' : '● Selected') : (lang === 'ru' ? 'Подробнее →' : 'View →')}</span>
+                            <span className="text-slate-400 font-normal">✈ {t(city.flight)}</span>
                           </div>
                         </div>
-
-                        {/* Book Tour CTA Button */}
-                        <div className="pt-2">
-                          <button
-                            onClick={() => handleBookCity(city, t(activeCountry.name))}
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-navy-950 to-navy-900 hover:from-gold-600 hover:to-gold-500 text-gold-400 hover:text-navy-950 font-bold text-xs sm:text-sm shadow-md transition-all duration-200"
-                          >
-                            <span>{lang === 'ru' ? `Подобрать тур в ${t(city.name)} от ${city.priceFrom}` : `Book Tour to ${t(city.name)} from ${city.priceFrom}`}</span>
-                            <ArrowRight size={15} />
-                          </button>
-                        </div>
-
                       </div>
+                    </div>
+                  );
+                })}
+              </div>
 
+              {/* ========================================================= */}
+              {/* LEVEL 3: CITY DETAIL, SEVERAL PHOTOS & TOP SIGHTS         */}
+              {/* ========================================================= */}
+              {activeCity && (
+                <div 
+                  ref={cityDetailRef}
+                  className="bg-white rounded-2xl border-2 border-gold-500/30 p-6 sm:p-8 shadow-md animate-fadeIn"
+                >
+                  {/* City Header */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="px-2.5 py-0.5 rounded-full bg-gold-500/10 text-gold-700 text-xs font-bold">
+                          {t(activeCity.tag)}
+                        </span>
+                        <span className="text-xs text-slate-500">
+                          ✈ {t(activeCity.flight)}
+                        </span>
+                        <span className="text-xs text-amber-600 font-bold">
+                          ☀️ {activeCity.temp}
+                        </span>
+                      </div>
+                      <h4 className="font-heading font-bold text-2xl text-navy-950">
+                        {t(activeCity.name)} ({t(activeCountry.name)})
+                      </h4>
+                    </div>
+
+                    <button
+                      onClick={() => handleConsultation(`${t(activeCountry.name)} — ${t(activeCity.name)}`)}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-navy-950 hover:bg-navy-900 text-gold-400 font-bold text-xs shadow-sm transition-all"
+                    >
+                      <MessageCircle size={14} />
+                      <span>{lang === 'ru' ? `Узнать подробнее о ${t(activeCity.name)}` : `Inquire about ${t(activeCity.name)}`}</span>
+                    </button>
+                  </div>
+
+                  {/* City Description */}
+                  <div className="py-4">
+                    <p className="text-slate-700 text-sm leading-relaxed max-w-4xl">
+                      {t(activeCity.desc)}
+                    </p>
+                  </div>
+
+                  {/* SEVERAL PHOTOS OF THAT CITY */}
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                        <Camera size={14} className="text-gold-500" />
+                        <span>{lang === 'ru' ? `Фотографии города ${t(activeCity.name)}:` : `Photos of ${t(activeCity.name)}:`}</span>
+                      </div>
+                      <span className="text-xs text-slate-400">
+                        {activeCity.photos ? activeCity.photos.length : 1} {lang === 'ru' ? 'фото' : 'photos'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {(activeCity.photos || [activeCity.image]).map((photoUrl, phIdx) => (
+                        <div
+                          key={phIdx}
+                          onClick={() => setLightboxPhoto(photoUrl)}
+                          className="cursor-pointer h-36 sm:h-44 rounded-xl overflow-hidden border border-slate-200 shadow-sm relative group bg-slate-900"
+                        >
+                          <img 
+                            src={photoUrl} 
+                            alt={t(activeCity.name)} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <Eye size={18} className="text-white" />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  {/* Beach Features if coastal */}
+                  {activeCity.beachInfo && (
+                    <div className="mb-6 p-4 rounded-xl bg-cyan-50/80 border border-cyan-200/80 text-cyan-950">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-800 mb-1">
+                        <Waves size={14} />
+                        <span>{lang === 'ru' ? 'Особенности пляжей и моря:' : 'Beach & Ocean Features:'}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-cyan-900 leading-relaxed">
+                        {t(activeCity.beachInfo)}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* TOP TOURIST SIGHTS OF THAT CITY */}
+                  <div>
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-navy-950 uppercase tracking-wider mb-3">
+                      <Sparkles size={14} className="text-gold-500" />
+                      <span>{lang === 'ru' ? `Главные достопримечательности города ${t(activeCity.name)}:` : `Top Tourist Sights in ${t(activeCity.name)}:`}</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {activeCity.attractions.map((att, aIdx) => (
+                        <div
+                          key={aIdx}
+                          className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-gold-400 hover:bg-white transition-all shadow-2xs"
+                        >
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span className="w-6 h-6 rounded-full bg-gold-500/15 text-gold-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                              {aIdx + 1}
+                            </span>
+                            <h6 className="font-heading font-bold text-xs sm:text-sm text-navy-950 truncate">
+                              {t(att.name)}
+                            </h6>
+                          </div>
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            {t(att.desc)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+              )}
 
             </div>
           </div>
         )}
 
       </div>
+
+      {/* ========================================================= */}
+      {/* FULL PHOTO LIGHTBOX PREVIEW MODAL                         */}
+      {/* ========================================================= */}
+      {lightboxPhoto && (
+        <div 
+          onClick={() => setLightboxPhoto(null)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer animate-fadeIn"
+        >
+          <button
+            onClick={() => setLightboxPhoto(null)}
+            className="absolute top-4 right-4 p-2 rounded-full bg-white/20 text-white hover:bg-white/40 transition-colors"
+          >
+            <X size={24} />
+          </button>
+          <div className="max-w-4xl max-h-[85vh] overflow-hidden rounded-2xl shadow-2xl">
+            <img 
+              src={lightboxPhoto} 
+              alt="Destination Photo" 
+              className="w-full h-full object-contain max-h-[85vh]" 
+            />
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }
