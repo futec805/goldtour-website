@@ -3,6 +3,8 @@
 // All Russian text with English translations for every section
 // ============================================================
 
+const BASE = import.meta.env.BASE_URL ? (import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`) : '/';
+
 export const siteContent = {
   // ─── Company Info ───
   company: {
@@ -146,7 +148,7 @@ export const siteContent = {
         offerPrice: { ru: '48 000 ₽', en: '48,000 ₽' },
         discount: '-29%',
         savings: { ru: 'Экономия 20 000 ₽', en: 'Save 20,000 ₽' },
-        image: './images/destinations/egypt.jpg',
+        image: `${BASE}images/destinations/egypt.jpg`,
         flag: '🇪🇬',
         large: true,
         category: 'beach',
@@ -164,7 +166,7 @@ export const siteContent = {
         offerPrice: { ru: '52 000 ₽', en: '52,000 ₽' },
         discount: '-30%',
         savings: { ru: 'Экономия 22 000 ₽', en: 'Save 22,000 ₽' },
-        image: './images/destinations/turkey.jpg',
+        image: `${BASE}images/destinations/turkey.jpg`,
         flag: '🇹🇷',
         category: 'family',
         rating: 4.8,
@@ -181,7 +183,7 @@ export const siteContent = {
         offerPrice: { ru: '68 000 ₽', en: '68,000 ₽' },
         discount: '-28%',
         savings: { ru: 'Экономия 27 000 ₽', en: 'Save 27,000 ₽' },
-        image: './images/destinations/uae.jpg',
+        image: `${BASE}images/destinations/uae.jpg`,
         flag: '🇦🇪',
         category: 'luxury',
         rating: 4.9,
@@ -198,7 +200,7 @@ export const siteContent = {
         offerPrice: { ru: '85 000 ₽', en: '85,000 ₽' },
         discount: '-26%',
         savings: { ru: 'Экономия 30 000 ₽', en: 'Save 30,000 ₽' },
-        image: './images/destinations/thailand.jpg',
+        image: `${BASE}images/destinations/thailand.jpg`,
         flag: '🇹🇭',
         large: true,
         category: 'exotic',
@@ -216,7 +218,7 @@ export const siteContent = {
         offerPrice: { ru: '140 000 ₽', en: '140,000 ₽' },
         discount: '-26%',
         savings: { ru: 'Экономия 50 000 ₽', en: 'Save 50,000 ₽' },
-        image: './images/destinations/maldives.jpg',
+        image: `${BASE}images/destinations/maldives.jpg`,
         flag: '🇲🇻',
         category: 'luxury',
         rating: 5.0,
@@ -233,7 +235,7 @@ export const siteContent = {
         offerPrice: { ru: '110 000 ₽', en: '110,000 ₽' },
         discount: '-27%',
         savings: { ru: 'Экономия 40 000 ₽', en: 'Save 40,000 ₽' },
-        image: './images/destinations/cuba.jpg',
+        image: `${BASE}images/destinations/cuba.jpg`,
         flag: '🇨🇺',
         category: 'beach',
         rating: 4.7,
@@ -250,7 +252,7 @@ export const siteContent = {
         offerPrice: { ru: '79 000 ₽', en: '79,000 ₽' },
         discount: '-28%',
         savings: { ru: 'Экономия 31 000 ₽', en: 'Save 31,000 ₽' },
-        image: './images/destinations/hainan.jpg',
+        image: `${BASE}images/destinations/hainan.jpg`,
         flag: '🇨🇳',
         category: 'exotic',
         rating: 4.8,
@@ -283,7 +285,7 @@ export const siteContent = {
         discount: '-33%',
         nights: 7,
         mealPlan: 'AI',
-        image: './images/destinations/egypt.jpg',
+        image: `${BASE}images/destinations/egypt.jpg`,
       },
       {
         hotel: 'Rixos Premium Belek 5★',
@@ -293,7 +295,7 @@ export const siteContent = {
         discount: '-28%',
         nights: 10,
         mealPlan: 'UAI',
-        image: './images/destinations/turkey.jpg',
+        image: `${BASE}images/destinations/turkey.jpg`,
       },
       {
         hotel: 'Atlantis The Palm 5★',
@@ -303,7 +305,7 @@ export const siteContent = {
         discount: '-29%',
         nights: 7,
         mealPlan: 'HB',
-        image: './images/destinations/uae.jpg',
+        image: `${BASE}images/destinations/uae.jpg`,
       },
     ],
   },

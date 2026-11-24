@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/goldtour-website/',
   plugins: [react(), tailwindcss()],
   server: {
     host: true,
