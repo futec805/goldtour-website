@@ -29,6 +29,7 @@ export const siteContent = {
     search: { ru: 'Поиск туров', en: 'Tour Search' },
     quiz: { ru: 'Подобрать тур', en: 'Tour Finder' },
     destinations: { ru: 'Направления', en: 'Destinations' },
+    guide: { ru: 'Путеводитель', en: 'City Guide' },
     services: { ru: 'Услуги', en: 'Services' },
     about: { ru: 'О нас', en: 'About Us' },
     reviews: { ru: 'Отзывы', en: 'Reviews' },
