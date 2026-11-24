@@ -14,7 +14,6 @@ export default function Header() {
     { label: t(nav.search), href: '#search' },
     { label: t(nav.quiz), href: '#quiz' },
     { label: t(nav.destinations), href: '#destinations' },
-    { label: t(nav.guide), href: '#guide' },
     { label: t(nav.services), href: '#services' },
     { label: t(nav.reviews), href: '#reviews' },
     { label: t(nav.contacts), href: '#contacts' },
