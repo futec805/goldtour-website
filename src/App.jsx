@@ -37,9 +37,9 @@ function App() {
       <Header />
       <Hero />
       <TrustBar />
+      <PopularDestinations onSelectTour={handleSelectTour} />
       <TourSearch onSelectTour={handleSelectTour} />
       <TourQuiz />
-      <PopularDestinations onSelectTour={handleSelectTour} />
       <HotTours onSelectTour={handleSelectTour} />
       <HotToursCta />
       <Services />
