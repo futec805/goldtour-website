@@ -100,25 +100,6 @@ const SAMPLE_RESULTS = [
     operator: 'Biblio Globus',
     image: `${BASE}images/destinations/maldives.jpg`,
     tags: ['Водная вилла', 'Домашний риф']
-  },
-  {
-    id: 6,
-    hotel: 'Iberostar Bella Vista Varadero 5★',
-    country: 'Куба',
-    countryEn: 'Cuba',
-    resort: 'Варадеро (Varadero)',
-    stars: 5,
-    mealPlan: 'Все включено (AI)',
-    departure: 'Москва (SVO)',
-    departureEn: 'Moscow (SVO)',
-    dates: '11 – 22 дек (11 ночей)',
-    datesEn: 'Dec 11 – 22 (11 nights)',
-    nights: 11,
-    price: '118 000 ₽',
-    oldPrice: '150 000 ₽',
-    operator: 'Pegas Touristik',
-    image: `${BASE}images/destinations/cuba.jpg`,
-    tags: ['Белоснежный песок', 'Карибское море']
   }
 ];
 
@@ -353,7 +334,6 @@ export default function TourSearch({ onSelectTour }) {
                     <option value="ОАЭ">ОАЭ 🇦🇪 (UAE)</option>
                     <option value="Таиланд">Таиланд 🇹🇭 (Thailand)</option>
                     <option value="Мальдивы">Мальдивы 🇲🇻 (Maldives)</option>
-                    <option value="Куба">Куба 🇨🇺 (Cuba)</option>
                   </select>
                 </div>
 

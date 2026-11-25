@@ -663,71 +663,7 @@ export const countryGuideData = [
     ]
   },
 
-  // 9. CUBA
-  {
-    id: 'cuba',
-    flag: '🇨🇺',
-    name: { ru: 'Куба', en: 'Cuba' },
-    cardImage: 'https://images.unsplash.com/photo-1500759285222-a95626b934cb?w=700&auto=format&fit=crop&q=80',
-    priceFrom: '89 000 ₽',
-    visa: { ru: 'Без визы до 90 дней для граждан РФ', en: 'Visa-free up to 90 days' },
-    flightTime: { ru: 'Прямые рейсы из Москвы в Варадеро и Кайо-Коко (~13 ч)', en: 'Direct from Moscow (~13h)' },
-    bestSeason: { ru: 'Ноябрь — Апрель (сухой сезон, теплое море)', en: 'November — April' },
-    tagline: {
-      ru: 'Карибская мечта: 20 км белоснежных пляжей Варадеро, Атлантика и «All Inclusive»',
-      en: 'Caribbean dream: 20km of pure white beaches, turquoise Atlantic, and All-Inclusive'
-    },
-    overview: {
-      ru: 'Куба — это остров искренней радости, сальсы и потрясающей природы Карибского бассейна. Пляжи Варадеро регулярно входят в топ-3 лучших пляжей планеты: ослепительно белый песок, лазурный океан без водорослей, ретро-кабриолеты и теплое отношение к туристам из России.',
-      en: 'Cuba combines world-class powder sand beaches in Varadero with retro convertibles, salsa rhythms, and all-inclusive Caribbean hospitality.'
-    },
-    russianTravelerTips: {
-      money: { ru: 'Карты МИР работают во многих банкоматах и отелях Кубы! Также принимаются наличные евро и доллары.', en: 'Russian MIR payment cards work at many ATMs and resort hotels on Cuba! USD/EUR cash also accepted.' },
-      flights: { ru: 'Прямые рейсы авиакомпании Nordwind / Россия из Москвы прямо в Варадеро и на остров Кайо-Коко.', en: 'Direct flights from Moscow straight to Varadero (VRA) and Cayo Coco (CCC).' },
-      language: { ru: 'Историческая дружба с Россией: многие кубинцы учились в СССР и хорошо говорят по-русски, в отелях очень радушный прием.', en: 'Deep historical ties: many Cubans speak Russian and welcome Russian visitors with warmth.' },
-      beaches: { ru: 'Один из лучших пляжей мира: 20 км непрерывного мучнистого белого песка, кристальная лазурная вода Атлантики.', en: 'Ranked top-3 in the world: 20km of powdery white sand and turquoise calm waters.' }
-    },
-    countryPhotos: [
-      'https://images.unsplash.com/photo-1500759285222-a95626b934cb?w=900&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=900&auto=format&fit=crop&q=80'
-    ],
-    cities: [
-      {
-        id: 'varadero',
-        name: { ru: 'Курорт Варадеро', en: 'Varadero Beach' },
-        tag: { ru: '20 км карибских пляжей & All-Inclusive', en: '20km Caribbean Beaches & All-Inclusive' },
-        flight: { ru: '13ч 00м прямой рейс', en: '13h 00m direct' },
-        temp: '+29°C (вода +27°C)',
-        priceFrom: '89 000 ₽',
-        image: 'https://images.unsplash.com/photo-1500759285222-a95626b934cb?w=800&auto=format&fit=crop&q=80',
-        photos: [
-          'https://images.unsplash.com/photo-1500759285222-a95626b934cb?w=800&auto=format&fit=crop&q=80',
-          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80'
-        ],
-        beachInfo: {
-          ru: '20 километров непрерывного белого песка без камней, кристально чистая атлантическая вода всех оттенков бирюзы, пологий заход.',
-          en: '20km uninterrupted powdery white sand, stone-free sea bottom, and transparent turquoise waters.'
-        },
-        desc: {
-          ru: 'Главный курорт Острова Свободы: отели «Всё включено», бесплатные коктейли, катамараны, прогулки на ретро-автомобилях и экскурсии в колониальную Гавану.',
-          en: 'Famous 20km sandspit with all-inclusive beachfront resorts, vintage convertibles, and Havana day tours.'
-        },
-        attractions: [
-          {
-            name: { ru: 'Пляжи Варадеро & Катамаран на остров Кайо-Бланко', en: 'Varadero Beach & Cayo Blanco' },
-            desc: { ru: 'Морская прогулка под парусом на необитаемый коралловый остров с обедом из лобстеров.', en: 'Sail aboard a luxury catamaran to uninhabited coral atolls with wild dolphin encounters.' }
-          },
-          {
-            name: { ru: 'Поездка в колониальную Гавану на ретро-кабриолете', en: 'Classic Convertible Havana Tour' },
-            desc: { ru: 'Старая Гавана, набережная Малекон, Капитолий и бары Хемингуэя.', en: 'Historic Old Havana, Malecón promenade, and colorful 1950s American convertibles.' }
-          }
-        ]
-      }
-    ]
-  },
-
-  // 10. INDIA
+  // 9. INDIA
   {
     id: 'india',
     flag: '🇮🇳',
