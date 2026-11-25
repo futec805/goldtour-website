@@ -3,6 +3,7 @@ import { Menu, X, Phone, MessageCircle, Send } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
 import CallbackModal from './CallbackModal';
+import logoImg from '../assets/logo.png';
 
 export default function Header() {
   const { lang, toggleLang, t } = useLanguage();
@@ -49,13 +50,20 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-navy-900/95 backdrop-blur-md border-b border-white/10 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-heading font-bold text-lg">
-              ЗТ
+          <a href="#" className="flex items-center gap-3 group">
+            <img 
+              src={logoImg} 
+              alt="Золотой тур" 
+              className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" 
+            />
+            <div className="flex flex-col">
+              <span className="font-heading font-bold text-lg sm:text-xl text-white leading-tight">
+                {t(siteContent.company.name)}
+              </span>
+              <span className="text-[10px] sm:text-xs text-gold-400 font-medium">
+                {t({ ru: 'Туристическое агентство', en: 'Travel Agency' })}
+              </span>
             </div>
-            <span className="font-heading font-bold text-xl text-white hidden sm:block">
-              {t(siteContent.company.name)}
-            </span>
           </a>
 
           {/* Desktop nav links */}

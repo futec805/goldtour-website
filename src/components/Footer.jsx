@@ -1,6 +1,7 @@
 import { Send, MessageCircle, Phone, Mail, Shield, MapPin, Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
+import logoImg from '../assets/logo.png';
 
 export default function Footer({ onOpenLegal }) {
   const { t } = useLanguage();
@@ -21,10 +22,12 @@ export default function Footer({ onOpenLegal }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand & Mission */}
           <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-heading font-black text-lg shadow-md shadow-gold-500/20">
-                ЗТ
-              </div>
+            <div className="flex items-center gap-3 mb-4">
+              <img 
+                src={logoImg} 
+                alt="Золотой тур" 
+                className="h-12 sm:h-14 w-auto object-contain bg-white/5 p-1 rounded-lg" 
+              />
               <div>
                 <span className="font-heading font-bold text-xl text-white block leading-tight">
                   {t(company.name)}
