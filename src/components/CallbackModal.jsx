@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Phone } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
+import { sendLeadToJivo } from '../utils/jivoBridge';
 
 export default function CallbackModal({ isOpen, onClose }) {
   const { t } = useLanguage();
@@ -14,6 +15,13 @@ export default function CallbackModal({ isOpen, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    sendLeadToJivo({
+      source: 'Заказ обратного звонка',
+      name,
+      phone,
+      preferredContact: 'Обратный звонок',
+      message: 'Прошу перезвонить по поводу подбора тура.',
+    });
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);

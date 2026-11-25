@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { X, CheckCircle, Calendar, Moon, Utensils, MessageCircle, Send, PhoneCall } from 'lucide-react';
+import { X, CheckCircle, Moon, Utensils, MessageCircle, Send, PhoneCall } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
+import { sendLeadToJivo } from '../utils/jivoBridge';
 
 export default function BookingModal({ isOpen, onClose, tour }) {
   const { t } = useLanguage();
@@ -9,25 +10,69 @@ export default function BookingModal({ isOpen, onClose, tour }) {
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [contactMethod, setContactMethod] = useState('whatsapp');
+  const [jivoResult, setJivoResult] = useState(null);
 
   useEffect(() => {
     if (!isOpen) {
       setSubmitted(false);
+      setJivoResult(null);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
+  const getTourTitle = () =>
+    tour?.hotel ||
+    (typeof tour?.name === 'object' ? t(tour.name) : tour?.name) ||
+    t({ ru: 'Бронирование тура', en: 'Tour Booking' });
+
+  const getTourPrice = () =>
+    (tour && (typeof tour.price === 'object' ? t(tour.price) : tour.price || t(tour.priceFrom))) || 'По запросу';
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const tourTitle = getTourTitle();
+    const tourPrice = getTourPrice();
+    const methodLabel =
+      contactMethod === 'whatsapp' ? 'WhatsApp' : contactMethod === 'telegram' ? 'Telegram' : 'Телефонный звонок';
+
+    const details = [
+      tourTitle,
+      tour?.country ? `Страна: ${tour.country}` : null,
+      tour?.city ? `Город: ${tour.city}` : null,
+      tour?.nights ? `${tour.nights} ночей` : null,
+      tour?.mealPlan ? tour.mealPlan : null,
+      `Цена: ${tourPrice}`,
+    ]
+      .filter(Boolean)
+      .join(' | ');
+
+    const res = sendLeadToJivo({
+      source: 'Заявка на бронирование тура',
+      name,
+      email,
+      phone,
+      preferredContact: methodLabel,
+      tourSummary: details,
+      message: `Прошу забронировать или подобрать тур: ${details}`,
+      customFields: [
+        { title: 'Отель / Направление', content: tourTitle },
+        { title: 'Стоимость', content: tourPrice },
+      ],
+    });
+
+    setJivoResult(res);
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setName('');
       setPhone('');
+      setEmail('');
+      setJivoResult(null);
       onClose();
-    }, 3500);
+    }, 4500);
   };
 
   return (
@@ -107,6 +152,16 @@ export default function BookingModal({ isOpen, onClose, tour }) {
               </div>
 
               <div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t({ ru: 'E-mail (необязательно)', en: 'E-mail (optional)' })}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-gold-500 transition-colors"
+                />
+              </div>
+
+              <div>
                 <div className="text-xs text-white/70 mb-2">{t(bookingModal.messengerChoice)}</div>
                 <div className="grid grid-cols-3 gap-2">
                   <button
@@ -166,9 +221,25 @@ export default function BookingModal({ isOpen, onClose, tour }) {
             <h4 className="text-xl font-heading font-bold text-white mb-2">
               {t({ ru: 'Заявка успешно отправлена!', en: 'Booking Request Submitted!' })}
             </h4>
-            <p className="text-white/70 text-sm max-w-sm mx-auto leading-relaxed">
-              {t(bookingModal.successMessage)}
+            <p className="text-white/70 text-sm max-w-sm mx-auto leading-relaxed mb-4">
+              {jivoResult?.mode === 'online'
+                ? t({
+                    ru: 'Чат с менеджером Jivo уже открыт — ваши контакты и детали тура переданы автоматически.',
+                    en: 'Live manager chat in Jivo is now open — your contact & tour details were attached.',
+                  })
+                : t(bookingModal.successMessage)}
             </p>
+            {jivoResult?.formattedMessage && (
+              <a
+                href={`${company.whatsappUrl}?text=${encodeURIComponent(jivoResult.formattedMessage)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
+              >
+                <MessageCircle size={14} />
+                {t({ ru: 'Дублировать в WhatsApp', en: 'Also send via WhatsApp' })}
+              </a>
+            )}
           </div>
         )}
       </div>

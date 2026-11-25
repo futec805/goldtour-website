@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Sparkles, ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
+import { sendLeadToJivo } from '../utils/jivoBridge';
 
 export default function TourQuiz() {
   const { t } = useLanguage();
@@ -24,6 +25,16 @@ export default function TourQuiz() {
 
   const handleSubmit = () => {
     if (answers[currentStep] && phone) {
+      const quizSummary = quiz.steps
+        .map((s, idx) => `${t(s.question)}: ${answers[idx] || '—'}`)
+        .join(' | ');
+      sendLeadToJivo({
+        source: 'Квиз по подбору тура',
+        phone,
+        preferredContact: 'WhatsApp / Звонок',
+        tourSummary: quizSummary,
+        message: `Результаты квиза:\n${quizSummary}`,
+      });
       setSubmitted(true);
     }
   };

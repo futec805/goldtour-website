@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle, CheckCircle, Navigation, Car, Bus } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
+import { sendLeadToJivo } from '../utils/jivoBridge';
 
 export default function ContactSection() {
   const { t } = useLanguage();
@@ -16,6 +17,12 @@ export default function ContactSection() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.name && formData.phone) {
+      sendLeadToJivo({
+        source: 'Форма обратной связи (Контакты)',
+        name: formData.name,
+        phone: formData.phone,
+        message: formData.message || 'Запрос консультации с сайта.',
+      });
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
