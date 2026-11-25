@@ -22,7 +22,7 @@ const SAMPLE_RESULTS = [
     price: '54 800 ₽',
     oldPrice: '72 000 ₽',
     operator: 'Coral Travel',
-    image: `${BASE}images/destinations/egypt.jpg`,
+    image: `${BASE}images/destinations/egypt.jpg?v=2`,
     tags: ['Первая линия', 'Собственный пляж', 'Песчаный вход']
   },
   {
@@ -41,7 +41,7 @@ const SAMPLE_RESULTS = [
     price: '68 400 ₽',
     oldPrice: '89 000 ₽',
     operator: 'Anex Tour',
-    image: `${BASE}images/destinations/turkey.jpg`,
+    image: `${BASE}images/destinations/turkey.jpg?v=2`,
     tags: ['Подогреваемый бассейн', 'Премиум сервис']
   },
   {

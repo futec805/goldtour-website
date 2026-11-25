@@ -12,7 +12,7 @@ export const countryGuideData = [
     id: 'turkey',
     flag: '🇹🇷',
     name: { ru: 'Турция', en: 'Turkey' },
-    cardImage: `${BASE}images/destinations/turkey.jpg`,
+    cardImage: `${BASE}images/destinations/turkey.jpg?v=2`,
     priceFrom: '38 500 ₽',
     visa: { ru: 'Без визы до 60 дней (загранпаспорт РФ)', en: 'Visa-free up to 60 days' },
     flightTime: { ru: 'Прямые рейсы из Н.Новгорода (~4 ч) и Москвы (~4.5 ч)', en: 'Direct from Nizhny Novgorod (~4h) & Moscow (~4.5h)' },
@@ -33,7 +33,7 @@ export const countryGuideData = [
       beaches: { ru: 'Песчаные пляжи в Сиде и Белеке, песчано-галечные в Анталье и Кемере с кристальной водой и горным воздухом.', en: 'Sandy and pebble beaches with warm turquoise water and mountain backdrops.' }
     },
     countryPhotos: [
-      `${BASE}images/destinations/turkey.jpg`,
+      `${BASE}images/destinations/turkey.jpg?v=2`,
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=900&auto=format&fit=crop&q=80',
@@ -50,7 +50,7 @@ export const countryGuideData = [
         image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
         photos: [
           'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80',
-          `${BASE}images/destinations/turkey.jpg`,
+          `${BASE}images/destinations/turkey.jpg?v=2`,
           'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&auto=format&fit=crop&q=80'
         ],
         beachInfo: {
@@ -86,7 +86,7 @@ export const countryGuideData = [
         image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&auto=format&fit=crop&q=80',
         photos: [
           'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&auto=format&fit=crop&q=80',
-          `${BASE}images/destinations/turkey.jpg`
+          `${BASE}images/destinations/turkey.jpg?v=2`
         ],
         beachInfo: {
           ru: 'Закрытые живописные бухты Эгейского моря с прозрачнейшей изумрудной водой, соснами и деревянными пирсами.',

@@ -20,9 +20,9 @@ const HERO_SLIDES = [
     flag: '🇹🇷',
     title: { ru: 'Турция', en: 'Turkey' },
     caption: { ru: 'Анталья, Кемер и «Ультра всё включено»', en: 'Antalya, Kemer & Ultra All-Inclusive' },
-    image: `${BASE}images/destinations/turkey.jpg`,
-    thumb: `${BASE}images/destinations/turkey.jpg`,
-    fallback: `${BASE}images/destinations/turkey.jpg`,
+    image: `${BASE}images/destinations/turkey.jpg?v=2`,
+    thumb: `${BASE}images/destinations/turkey.jpg?v=2`,
+    fallback: `${BASE}images/destinations/turkey.jpg?v=2`,
   },
   {
     id: 'uae',
@@ -47,9 +47,9 @@ const HERO_SLIDES = [
     flag: '🇪🇬',
     title: { ru: 'Египет', en: 'Egypt' },
     caption: { ru: 'Красное море и коралловые рифы круглый год', en: 'Red Sea & coral reefs year-round' },
-    image: `${BASE}images/destinations/egypt.jpg`,
-    thumb: `${BASE}images/destinations/egypt.jpg`,
-    fallback: `${BASE}images/destinations/egypt.jpg`,
+    image: `${BASE}images/destinations/egypt.jpg?v=2`,
+    thumb: `${BASE}images/destinations/egypt.jpg?v=2`,
+    fallback: `${BASE}images/destinations/egypt.jpg?v=2`,
   },
 ];
 
@@ -59,11 +59,11 @@ export default function Hero() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = setTimeout(() => {
       setActiveIndex((prev) => (prev + 1) % HERO_SLIDES.length);
     }, 5500);
-    return () => clearInterval(timer);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [activeIndex]);
 
   const activeSlide = HERO_SLIDES[activeIndex];
 
