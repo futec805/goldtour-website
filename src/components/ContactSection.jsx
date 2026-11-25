@@ -30,7 +30,6 @@ export default function ContactSection() {
   const { contact, company } = siteContent;
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
-  const [jivoResult, setJivoResult] = useState(null);
   const [officeStatus, setOfficeStatus] = useState(() => getOfficeStatus());
 
   useEffect(() => {
@@ -45,19 +44,17 @@ export default function ContactSection() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.name && formData.phone) {
-      const res = sendLeadToJivo({
+      sendLeadToJivo({
         source: 'Форма обратной связи (Контакты)',
         name: formData.name,
         phone: formData.phone,
         message: formData.message || 'Запрос консультации с сайта.',
       });
-      setJivoResult(res);
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
-        setJivoResult(null);
         setFormData({ name: '', phone: '', message: '' });
-      }, 4500);
+      }, 3500);
     }
   };
 
@@ -313,17 +310,6 @@ export default function ContactSection() {
                       en: 'We received your message. Our duty travel manager will contact you within 10–15 minutes.'
                     })}
                   </p>
-                  {jivoResult?.formattedMessage && (
-                    <a
-                      href={`${company.whatsappUrl}?text=${encodeURIComponent(jivoResult.formattedMessage)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
-                    >
-                      <MessageCircle size={14} />
-                      {t({ ru: 'Дублировать в WhatsApp', en: 'Also send via WhatsApp' })}
-                    </a>
-                  )}
                 </div>
               )}
             </div>

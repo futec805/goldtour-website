@@ -1,6 +1,7 @@
 // ============================================================
-// jivoBridge.js — Routes website booking, callback, quiz, and
-// contact form submissions directly into the agency Jivo app.
+// jivoBridge.js — Instantly dispatches website booking, callback,
+// quiz, and contact form messages into the agency Jivo app
+// in both online (sendMessage) and offline (sendOfflineMessage) modes.
 // ============================================================
 
 const FALLBACK_EMAIL = 'zayavka@goldtour-nn.ru';
@@ -25,12 +26,11 @@ if (typeof window !== 'undefined') {
   };
 }
 
-function buildCustomData({ source, phone, preferredContact, tourSummary, customFields }) {
+function buildCustomData({ source, phone, tourSummary, customFields }) {
   const cards = [];
   if (source) cards.push({ title: 'Источник заявки', content: source });
   if (tourSummary) cards.push({ title: 'Выбранный тур', content: tourSummary });
   if (phone) cards.push({ title: 'Телефон', content: phone });
-  if (preferredContact) cards.push({ title: 'Способ связи', content: preferredContact });
   if (Array.isArray(customFields)) {
     customFields.forEach((item) => {
       if (item && item.content) {
@@ -55,38 +55,62 @@ function dispatchToJivoApi(payload) {
     console.warn('Jivo setCustomData failed:', e);
   }
 
-  try {
-    if (typeof api.setContactInfo === 'function') {
-      api.setContactInfo({
-        name: safeName,
-        email: safeEmail,
-        phone: safePhone,
-        description: fullText,
-      });
-    }
-  } catch (e) {
-    console.warn('Jivo setContactInfo failed:', e);
-  }
-
   const mode = typeof api.chatMode === 'function' ? api.chatMode() : 'offline';
 
   if (mode === 'offline' && typeof api.sendOfflineMessage === 'function') {
+    // Do NOT call setContactInfo right before sendOfflineMessage, because both invoke
+    // sendApiIntroduce internally and Jivo rejects duplicate introductions in the same session.
+    const offlinePayload = {
+      name: safeName,
+      email: safeEmail,
+      description: source || 'Заявка с сайта Золотой тур',
+      message: fullText,
+    };
+    if (safePhone) {
+      offlinePayload.phone = safePhone;
+    }
+
     try {
-      const res = api.sendOfflineMessage({
-        name: safeName,
-        email: safeEmail,
-        phone: safePhone,
-        description: source || 'Заявка с сайта Золотой тур',
-        message: fullText,
-      });
+      let res = api.sendOfflineMessage(offlinePayload);
+      if (res?.result !== 'ok' && offlinePayload.phone) {
+        // Retry without phone field if phone formatting tripped Jivo's validator
+        // (phone number is still included in message body).
+        const { phone: _omitted, ...fallbackPayload } = offlinePayload;
+        res = api.sendOfflineMessage(fallbackPayload);
+      }
       return { delivered: res?.result === 'ok', mode: 'offline', result: res };
     } catch (e) {
       console.warn('Jivo sendOfflineMessage failed:', e);
     }
   }
 
-  // Online mode (or fallback if offline send wasn't available):
-  // Open live chat window with all visitor details & tour context pre-attached.
+  // Online mode: attach contact details and send the formatted message text
+  // directly via jivo_api.sendMessage() so it reaches the manager app immediately.
+  try {
+    if (typeof api.setContactInfo === 'function') {
+      const contactPayload = {
+        name: safeName,
+        email: safeEmail,
+        description: fullText,
+      };
+      if (safePhone) contactPayload.phone = safePhone;
+      api.setContactInfo(contactPayload);
+    }
+  } catch (e) {
+    console.warn('Jivo setContactInfo failed:', e);
+  }
+
+  if (typeof api.sendMessage === 'function') {
+    try {
+      const res = api.sendMessage(fullText);
+      if (res?.result === 'ok') {
+        return { delivered: true, mode: 'online', result: res };
+      }
+    } catch (e) {
+      console.warn('Jivo sendMessage failed:', e);
+    }
+  }
+
   try {
     if (typeof api.open === 'function') {
       api.open();
@@ -104,7 +128,6 @@ export function sendLeadToJivo({
   name = '',
   email = '',
   phone = '',
-  preferredContact = '',
   tourSummary = '',
   message = '',
   customFields = [],
@@ -112,19 +135,24 @@ export function sendLeadToJivo({
   const safeName = (name || '').trim() || 'Клиент с сайта';
   const safePhone = (phone || '').trim();
   const safeEmail = (email || '').trim() || FALLBACK_EMAIL;
+  const timestamp = new Date().toLocaleTimeString('ru-RU', {
+    timeZone: 'Europe/Moscow',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 
   const lines = [
-    `[${source}]`,
+    `[${source} • ${timestamp} МСК]`,
     `Имя: ${safeName}`,
     safePhone ? `Телефон: ${safePhone}` : null,
     email && email.trim() ? `Email: ${email.trim()}` : null,
-    preferredContact ? `Предпочтительный способ связи: ${preferredContact}` : null,
     tourSummary ? `Тур / Направление: ${tourSummary}` : null,
     message ? `Сообщение: ${message}` : null,
   ].filter(Boolean);
 
   const fullText = lines.join('\n');
-  const customCards = buildCustomData({ source, phone: safePhone, preferredContact, tourSummary, customFields });
+  const customCards = buildCustomData({ source, phone: safePhone, tourSummary, customFields });
 
   const payload = { safeName, safeEmail, safePhone, source, fullText, customCards };
 

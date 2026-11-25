@@ -1,23 +1,20 @@
 import { useState, useEffect } from 'react';
-import { X, CheckCircle, Moon, Utensils, MessageCircle, Send, PhoneCall } from 'lucide-react';
+import { X, CheckCircle, Moon, Utensils } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
 import { sendLeadToJivo } from '../utils/jivoBridge';
 
 export default function BookingModal({ isOpen, onClose, tour }) {
   const { t } = useLanguage();
-  const { bookingModal, company } = siteContent;
+  const { bookingModal } = siteContent;
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [contactMethod, setContactMethod] = useState('whatsapp');
-  const [jivoResult, setJivoResult] = useState(null);
 
   useEffect(() => {
     if (!isOpen) {
       setSubmitted(false);
-      setJivoResult(null);
     }
   }, [isOpen]);
 
@@ -35,8 +32,6 @@ export default function BookingModal({ isOpen, onClose, tour }) {
     e.preventDefault();
     const tourTitle = getTourTitle();
     const tourPrice = getTourPrice();
-    const methodLabel =
-      contactMethod === 'whatsapp' ? 'WhatsApp' : contactMethod === 'telegram' ? 'Telegram' : 'Телефонный звонок';
 
     const details = [
       tourTitle,
@@ -49,12 +44,11 @@ export default function BookingModal({ isOpen, onClose, tour }) {
       .filter(Boolean)
       .join(' | ');
 
-    const res = sendLeadToJivo({
+    sendLeadToJivo({
       source: 'Заявка на бронирование тура',
       name,
       email,
       phone,
-      preferredContact: methodLabel,
       tourSummary: details,
       message: `Прошу забронировать или подобрать тур: ${details}`,
       customFields: [
@@ -63,16 +57,14 @@ export default function BookingModal({ isOpen, onClose, tour }) {
       ],
     });
 
-    setJivoResult(res);
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setName('');
       setPhone('');
       setEmail('');
-      setJivoResult(null);
       onClose();
-    }, 4500);
+    }, 3500);
   };
 
   return (
@@ -161,45 +153,6 @@ export default function BookingModal({ isOpen, onClose, tour }) {
                 />
               </div>
 
-              <div>
-                <div className="text-xs text-white/70 mb-2">{t(bookingModal.messengerChoice)}</div>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setContactMethod('whatsapp')}
-                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold border transition-all ${
-                      contactMethod === 'whatsapp'
-                        ? 'bg-green-600/30 border-green-500 text-green-300'
-                        : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <MessageCircle size={14} /> WhatsApp
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setContactMethod('telegram')}
-                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold border transition-all ${
-                      contactMethod === 'telegram'
-                        ? 'bg-sky-600/30 border-sky-400 text-sky-300'
-                        : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <Send size={14} /> Telegram
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setContactMethod('phone')}
-                    className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold border transition-all ${
-                      contactMethod === 'phone'
-                        ? 'bg-gold-500/30 border-gold-400 text-gold-300'
-                        : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
-                    }`}
-                  >
-                    <PhoneCall size={14} /> {t({ ru: 'Звонок', en: 'Phone' })}
-                  </button>
-                </div>
-              </div>
-
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-navy-950 font-bold py-3.5 rounded-full transition-all shadow-lg shadow-gold-500/20 text-sm uppercase tracking-wide mt-2"
@@ -221,25 +174,9 @@ export default function BookingModal({ isOpen, onClose, tour }) {
             <h4 className="text-xl font-heading font-bold text-white mb-2">
               {t({ ru: 'Заявка успешно отправлена!', en: 'Booking Request Submitted!' })}
             </h4>
-            <p className="text-white/70 text-sm max-w-sm mx-auto leading-relaxed mb-4">
-              {jivoResult?.mode === 'online'
-                ? t({
-                    ru: 'Чат с менеджером Jivo уже открыт — ваши контакты и детали тура переданы автоматически.',
-                    en: 'Live manager chat in Jivo is now open — your contact & tour details were attached.',
-                  })
-                : t(bookingModal.successMessage)}
+            <p className="text-white/70 text-sm max-w-sm mx-auto leading-relaxed">
+              {t(bookingModal.successMessage)}
             </p>
-            {jivoResult?.formattedMessage && (
-              <a
-                href={`${company.whatsappUrl}?text=${encodeURIComponent(jivoResult.formattedMessage)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
-              >
-                <MessageCircle size={14} />
-                {t({ ru: 'Дублировать в WhatsApp', en: 'Also send via WhatsApp' })}
-              </a>
-            )}
           </div>
         )}
       </div>

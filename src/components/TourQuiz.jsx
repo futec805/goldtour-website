@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { Sparkles, ArrowLeft, ArrowRight, Check, MessageCircle, RefreshCw } from 'lucide-react';
+import { Sparkles, ArrowLeft, ArrowRight, Check, RefreshCw } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
 import { sendLeadToJivo } from '../utils/jivoBridge';
 
 export default function TourQuiz() {
   const { t } = useLanguage();
-  const { quiz, company } = siteContent;
+  const { quiz } = siteContent;
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [phone, setPhone] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  const [jivoResult, setJivoResult] = useState(null);
 
   const totalSteps = quiz.steps.length;
   const isLastStep = currentStep === totalSteps - 1;
@@ -29,14 +28,12 @@ export default function TourQuiz() {
       const quizSummary = quiz.steps
         .map((s, idx) => `${t(s.question)}: ${answers[idx] || '—'}`)
         .join(' | ');
-      const res = sendLeadToJivo({
+      sendLeadToJivo({
         source: 'Квиз по подбору тура',
         phone,
-        preferredContact: 'WhatsApp / Звонок',
         tourSummary: quizSummary,
         message: `Результаты квиза:\n${quizSummary}`,
       });
-      setJivoResult(res);
       setSubmitted(true);
     }
   };
@@ -46,7 +43,6 @@ export default function TourQuiz() {
     setAnswers({});
     setPhone('');
     setSubmitted(false);
-    setJivoResult(null);
   };
 
   if (submitted) {
@@ -58,27 +54,14 @@ export default function TourQuiz() {
             <h3 className="text-2xl font-heading font-bold text-white mb-5">
               {t(quiz.successMessage)}
             </h3>
-            <div className="flex flex-wrap justify-center gap-3">
-              {jivoResult?.formattedMessage && (
-                <a
-                  href={`${company.whatsappUrl}?text=${encodeURIComponent(jivoResult.formattedMessage)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-colors"
-                >
-                  <MessageCircle size={15} />
-                  {t({ ru: 'Дублировать в WhatsApp', en: 'Also send via WhatsApp' })}
-                </a>
-              )}
-              <button
-                type="button"
-                onClick={handleReset}
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white/80 text-sm font-semibold px-5 py-2.5 rounded-full transition-colors"
-              >
-                <RefreshCw size={15} />
-                {t({ ru: 'Пройти квиз заново', en: 'Retake Quiz' })}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white/80 text-sm font-semibold px-5 py-2.5 rounded-full transition-colors"
+            >
+              <RefreshCw size={15} />
+              {t({ ru: 'Пройти квиз заново', en: 'Retake Quiz' })}
+            </button>
           </div>
         </div>
       </section>
