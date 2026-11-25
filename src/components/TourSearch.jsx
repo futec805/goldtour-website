@@ -124,7 +124,7 @@ const SAMPLE_RESULTS = [
 
 export default function TourSearch({ onSelectTour }) {
   const { t, lang } = useLanguage();
-  const [activeTab, setActiveTab] = useState('interactive'); // 'interactive' or 'tourvisor'
+  const [activeTab, setActiveTab] = useState('tourvisor'); // Default to Tourvisor engine
   const [departure, setDeparture] = useState('nn');
   const [destination, setDestination] = useState('all');
   const [nights, setNights] = useState('7-10');
@@ -155,22 +155,29 @@ export default function TourSearch({ onSelectTour }) {
     }, 450);
   };
 
-  // Tourvisor script embed for production domain
+  // Tourvisor script embed & dynamic module loader
   useEffect(() => {
-    if (activeTab === 'tourvisor' && containerRef.current) {
-      const script = document.createElement('script');
-      script.src = 'https://tourvisor.ru/module/init.js';
-      script.async = true;
-      script.setAttribute('data-tv-moduleid', siteContent.company.tourvisorSearchId);
-      script.setAttribute('data-tv-siteid', siteContent.company.tourvisorId);
-      containerRef.current.appendChild(script);
-
-      return () => {
-        if (containerRef.current && script.parentNode === containerRef.current) {
-          containerRef.current.removeChild(script);
+    const triggerTourvisor = () => {
+      if (window.TV && typeof window.TV.loadModules === 'function') {
+        try {
+          window.TV.loadModules();
+        } catch (err) {
+          console.warn('TV.loadModules warning:', err);
         }
-      };
-    }
+      }
+    };
+
+    // If script already loaded in head
+    triggerTourvisor();
+
+    // Check periodically for 6 seconds until TV is ready and modules render
+    const interval = setInterval(triggerTourvisor, 500);
+    const timeout = setTimeout(() => clearInterval(interval), 6000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [activeTab]);
 
   return (
@@ -443,26 +450,19 @@ export default function TourSearch({ onSelectTour }) {
           </div>
         )}
 
-        {/* Tab 2: Tourvisor Engine (production iframe / script) */}
+        {/* Tab 2: Tourvisor Engine (Official Live Tourvisor Modules) */}
         {activeTab === 'tourvisor' && (
           <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 sm:p-8 min-h-[450px]">
-            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-start gap-3">
-              <Sparkles size={18} className="text-amber-600 shrink-0 mt-0.5" />
-              <div>
-                <strong>{t({ ru: 'Официальный модуль Турвизор', en: 'Official Tourvisor Search Widget' })}:</strong>{' '}
-                {t({
-                  ru: 'Подключен ID сайта 223415 («Золотой тур»). На зарегистрированном домене goldtour-nn.ru виджет автоматически отображает полную сетку цен туроператоров.',
-                  en: 'Site ID 223415 is connected. On the registered domain goldtour-nn.ru, this widget automatically streams real-time pricing from 80+ tour operators.'
-                })}
-              </div>
-            </div>
+            {/* Tourvisor Official Modules Container */}
+            <div className="tourvisor-wrapper min-h-[350px]">
+              {/* Tourvisor Main Search Form */}
+              <div className="tv-search-form tv-moduleid-9975387"></div>
 
-            <div ref={containerRef} className="min-h-[350px] flex items-center justify-center">
-              <div id={`tv-moduleid-${siteContent.company.tourvisorSearchId}`} className="w-full text-center py-12 text-slate-400 text-sm">
-                {t({
-                  ru: 'Загрузка модуля поиска туров Турвизор...',
-                  en: 'Loading Tourvisor search module...'
-                })}
+              {/* Tourvisor Action Buttons */}
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-6 pt-6 border-t border-slate-100">
+                <div className="tv-free-button tv-moduleid-9987923"></div>
+                <div className="tv-free-button tv-moduleid-9987903"></div>
+                <div className="tv-free-button tv-moduleid-9988202"></div>
               </div>
             </div>
           </div>
