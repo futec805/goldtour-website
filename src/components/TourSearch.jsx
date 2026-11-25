@@ -100,6 +100,25 @@ const SAMPLE_RESULTS = [
     operator: 'Biblio Globus',
     image: `${BASE}images/destinations/maldives.jpg`,
     tags: ['Водная вилла', 'Домашний риф']
+  },
+  {
+    id: 6,
+    hotel: 'Atlantis Sanya 5★',
+    country: 'Китай',
+    countryEn: 'China',
+    resort: 'Санья, о. Хайнань (Sanya)',
+    stars: 5,
+    mealPlan: 'Завтраки (BB)',
+    departure: 'Москва (SVO)',
+    departureEn: 'Moscow (SVO)',
+    dates: '16 – 26 дек (10 ночей)',
+    datesEn: 'Dec 16 – 26 (10 nights)',
+    nights: 10,
+    price: '84 900 ₽',
+    oldPrice: '112 000 ₽',
+    operator: 'Coral Travel',
+    image: `${BASE}images/destinations/hainan.jpg`,
+    tags: ['Аквапарк Aquaventure', 'Океанариум']
   }
 ];
 
@@ -144,23 +163,36 @@ export default function TourSearch({ onSelectTour }) {
   const handleSearch = () => {
     setSearching(true);
     setTimeout(() => {
-      let res = SAMPLE_RESULTS;
-      if (destination !== 'all') {
-        res = res.filter(item => 
-          item.country.toLowerCase() === destination.toLowerCase() || 
-          item.countryEn.toLowerCase() === destination.toLowerCase()
-        );
-      }
-      if (departure === 'nn') {
-        res = res.filter(item => item.departure.includes('Нижний Новгород') || destination !== 'all');
-      }
-      setFilteredResults(res.length > 0 ? res : SAMPLE_RESULTS.slice(0, 3));
+      let res = SAMPLE_RESULTS.filter((item) => {
+        if (destination !== 'all') {
+          const matchDest =
+            item.country.toLowerCase() === destination.toLowerCase() ||
+            item.countryEn.toLowerCase() === destination.toLowerCase();
+          if (!matchDest) return false;
+        }
+        if (departure === 'nn' && destination === 'all') {
+          if (!item.departure.includes('Нижний Новгород')) return false;
+        }
+        if (nights === '6-8' && (item.nights < 6 || item.nights > 8)) return false;
+        if (nights === '7-10' && (item.nights < 7 || item.nights > 10)) return false;
+        if (nights === '11-14' && item.nights < 11) return false;
+        return true;
+      });
+      setFilteredResults(res);
       setSearching(false);
-    }, 450);
+    }, 300);
+  };
+
+  const resetFilters = () => {
+    setDeparture('nn');
+    setDestination('all');
+    setNights('7-10');
+    setTravelers('2');
+    setFilteredResults(SAMPLE_RESULTS);
   };
 
   return (
-    <section id="search" className="py-20 bg-slate-50 relative">
+    <section id="search" className="scroll-mt-20 py-20 bg-slate-50 relative">
       <div className="max-w-7xl mx-auto px-4">
         
         {/* Section Header */}
@@ -334,6 +366,7 @@ export default function TourSearch({ onSelectTour }) {
                     <option value="ОАЭ">ОАЭ 🇦🇪 (UAE)</option>
                     <option value="Таиланд">Таиланд 🇹🇭 (Thailand)</option>
                     <option value="Мальдивы">Мальдивы 🇲🇻 (Maldives)</option>
+                    <option value="Китай">Китай, Хайнань 🇨🇳 (China)</option>
                   </select>
                 </div>
 
@@ -393,43 +426,81 @@ export default function TourSearch({ onSelectTour }) {
             </div>
 
             {/* Results Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredResults.map((tour) => (
-                <div
-                  key={tour.id}
-                  className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition-all group"
-                >
-                  <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={tour.image} 
-                      alt={tour.hotel}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-                    <div className="absolute top-3 left-3 bg-navy-950/80 backdrop-blur-sm text-gold-400 text-xs font-semibold px-2.5 py-1 rounded-full">
-                      {tour.operator}
-                    </div>
-                    <div className="absolute bottom-3 left-3 right-3 text-white">
-                      <div className="text-xs text-slate-300">{tour.country} • {tour.resort}</div>
-                      <h4 className="font-heading font-bold text-base truncate">{tour.hotel}</h4>
-                    </div>
-                  </div>
-
-                  <div className="p-4 flex items-center justify-between">
+            {filteredResults.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredResults.map((tour) => (
+                  <div
+                    key={tour.id}
+                    className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition-all group flex flex-col justify-between"
+                  >
                     <div>
-                      <div className="text-xs text-slate-400">{tour.departure}</div>
-                      <div className="text-lg font-bold text-navy-950">{tour.price}</div>
+                      <div className="relative h-48 overflow-hidden">
+                        <img 
+                          src={tour.image} 
+                          alt={tour.hotel}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
+                        <div className="absolute top-3 left-3 bg-navy-950/85 backdrop-blur-sm text-gold-400 text-xs font-semibold px-2.5 py-1 rounded-full">
+                          {tour.operator}
+                        </div>
+                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-navy-950 text-[11px] font-bold px-2.5 py-1 rounded-full">
+                          {tour.nights} {t({ ru: 'ночей', en: 'nights' })}
+                        </div>
+                        <div className="absolute bottom-3 left-3 right-3 text-white">
+                          <div className="text-xs text-slate-300">{tour.country} • {tour.resort}</div>
+                          <h4 className="font-heading font-bold text-base truncate">{tour.hotel}</h4>
+                        </div>
+                      </div>
+
+                      <div className="px-4 pt-3 pb-1 flex flex-wrap gap-1.5 text-[11px] text-slate-600">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 font-medium">{tour.mealPlan}</span>
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 font-medium">{lang === 'ru' ? tour.dates : tour.datesEn}</span>
+                      </div>
                     </div>
-                    <button
-                      onClick={() => onSelectTour && onSelectTour(tour)}
-                      className="px-4 py-2 rounded-xl bg-navy-950 text-gold-400 text-xs font-bold hover:bg-gold-500 hover:text-navy-950 transition-colors"
-                    >
-                      {t({ ru: 'Забронировать', en: 'Book' })}
-                    </button>
+
+                    <div className="p-4 flex items-center justify-between border-t border-slate-100 mt-2">
+                      <div>
+                        <div className="text-xs text-slate-400">{lang === 'ru' ? tour.departure : tour.departureEn}</div>
+                        <div className="flex items-baseline gap-2">
+                          <div className="text-lg font-bold text-navy-950">{tour.price}</div>
+                          {tour.oldPrice && <span className="text-xs text-slate-400 line-through">{tour.oldPrice}</span>}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => onSelectTour && onSelectTour(tour)}
+                        className="px-4 py-2 rounded-xl bg-navy-950 text-gold-400 text-xs font-bold hover:bg-gold-500 hover:text-navy-950 transition-colors"
+                      >
+                        {t({ ru: 'Забронировать', en: 'Book' })}
+                      </button>
+                    </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-3xl border border-slate-200 p-10 text-center shadow-sm">
+                <p className="text-navy-950 font-heading font-bold text-lg mb-2">
+                  {t({ ru: 'По выбранным параметрам туры не найдены в быстром каталоге', en: 'No matching deals in quick catalog for these filters' })}
+                </p>
+                <p className="text-slate-500 text-sm mb-5">
+                  {t({ ru: 'Сбросьте фильтры или воспользуйтесь полным живым поиском Турвизор (80+ туроператоров).', en: 'Reset filters or switch to the full Live Tourvisor Search Engine above.' })}
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <button
+                    onClick={resetFilters}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-navy-950 font-bold text-xs transition-colors"
+                  >
+                    <RefreshCw size={14} /> {t({ ru: 'Показать все предложения', en: 'Reset Filters' })}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('tourvisor')}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-navy-950 hover:bg-navy-900 text-gold-400 font-bold text-xs transition-colors"
+                  >
+                    <Search size={14} /> {t({ ru: 'Открыть модуль Турвизор', en: 'Open Live Tourvisor' })}
+                  </button>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         )}
 

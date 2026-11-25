@@ -124,7 +124,7 @@ export default function Hero() {
       </div>
 
       {/* Multi-Photo Gallery Strip */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pb-12">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pb-24 sm:pb-28">
         <div className="flex items-center justify-between mb-3 px-1">
           <span className="text-xs font-semibold uppercase tracking-wider text-white/60">
             {t({ ru: 'Популярные курорты — нажмите на фото', en: 'Featured Resorts — Click to Preview' })}
@@ -183,8 +183,8 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 animate-bounce z-10">
-        <ChevronDown size={26} className="text-white/50" />
+      <div className="absolute bottom-14 sm:bottom-16 left-1/2 -translate-x-1/2 animate-bounce z-10">
+        <ChevronDown size={24} className="text-white/50" />
       </div>
     </section>
   );

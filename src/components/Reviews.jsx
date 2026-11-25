@@ -7,7 +7,7 @@ export default function Reviews() {
   const { reviews } = siteContent;
 
   return (
-    <section id="reviews" className="py-20 bg-white">
+    <section id="reviews" className="scroll-mt-20 py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="font-heading font-bold text-3xl sm:text-4xl text-navy-950 mb-3">

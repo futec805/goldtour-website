@@ -88,7 +88,7 @@ export default function PopularDestinations({ onSelectTour }) {
   };
 
   return (
-    <section id="destinations" className="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
+    <section id="destinations" className="scroll-mt-20 py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4">
         
         {/* ========================================================= */}
@@ -344,13 +344,22 @@ export default function PopularDestinations({ onSelectTour }) {
                       </h4>
                     </div>
 
-                    <button
-                      onClick={() => handleConsultation(`${t(activeCountry.name)} — ${t(activeCity.name)}`)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-navy-950 hover:bg-navy-900 text-gold-400 font-bold text-xs shadow-sm transition-all"
-                    >
-                      <MessageCircle size={14} />
-                      <span>{lang === 'ru' ? `Узнать подробнее о ${t(activeCity.name)}` : `Inquire about ${t(activeCity.name)}`}</span>
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <a
+                        href="#search"
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-xs shadow-sm transition-all"
+                      >
+                        <Plane size={14} />
+                        <span>{lang === 'ru' ? 'Найти туры онлайн' : 'Search Live Tours'}</span>
+                      </a>
+                      <button
+                        onClick={() => handleConsultation(`${t(activeCountry.name)} — ${t(activeCity.name)}`)}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-navy-950 hover:bg-navy-900 text-gold-400 font-bold text-xs shadow-sm transition-all"
+                      >
+                        <MessageCircle size={14} />
+                        <span>{lang === 'ru' ? `Узнать подробнее о ${t(activeCity.name)}` : `Inquire about ${t(activeCity.name)}`}</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* City Description */}

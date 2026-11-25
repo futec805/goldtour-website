@@ -1,34 +1,44 @@
-import { useState } from 'react';
-import { X, Phone } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Phone, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
 import { sendLeadToJivo } from '../utils/jivoBridge';
 
 export default function CallbackModal({ isOpen, onClose }) {
   const { t } = useLanguage();
-  const { callbackModal } = siteContent;
+  const { callbackModal, company } = siteContent;
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [jivoResult, setJivoResult] = useState(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSubmitted(false);
+      setJivoResult(null);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendLeadToJivo({
+    const res = sendLeadToJivo({
       source: 'Заказ обратного звонка',
       name,
       phone,
       preferredContact: 'Обратный звонок',
       message: 'Прошу перезвонить по поводу подбора тура.',
     });
+    setJivoResult(res);
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setName('');
       setPhone('');
+      setJivoResult(null);
       onClose();
-    }, 3000);
+    }, 4500);
   };
 
   return (
@@ -70,7 +80,18 @@ export default function CallbackModal({ isOpen, onClose }) {
         ) : (
           <div className="text-center py-8">
             <div className="text-5xl mb-4">✅</div>
-            <p className="text-white text-lg font-medium">{t(callbackModal.successMessage)}</p>
+            <p className="text-white text-lg font-medium mb-4">{t(callbackModal.successMessage)}</p>
+            {jivoResult?.formattedMessage && (
+              <a
+                href={`${company.whatsappUrl}?text=${encodeURIComponent(jivoResult.formattedMessage)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
+              >
+                <MessageCircle size={14} />
+                {t({ ru: 'Дублировать в WhatsApp', en: 'Also send via WhatsApp' })}
+              </a>
+            )}
           </div>
         )}
       </div>

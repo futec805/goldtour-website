@@ -42,7 +42,7 @@ function App() {
       <PopularDestinations onSelectTour={handleSelectTour} />
       <HotTours onSelectTour={handleSelectTour} />
       <HotToursCta />
-      <Services />
+      <Services onSelectTour={handleSelectTour} />
       <HowWeWork />
       <WhyChooseUs />
       <Reviews />

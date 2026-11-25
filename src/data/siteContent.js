@@ -498,8 +498,8 @@ export const siteContent = {
   // ─── Footer ───
   footer: {
     copyright: {
-      ru: '© 2024 Туристическое агентство «Золотой тур». Все права защищены.',
-      en: '© 2024 Travel Agency "Gold Tour". All rights reserved.',
+      ru: '© 2026 Туристическое агентство «Золотой тур». Все права защищены.',
+      en: '© 2026 Travel Agency "Gold Tour". All rights reserved.',
     },
     privacy: { ru: 'Политика конфиденциальности', en: 'Privacy Policy' },
     personalData: {
