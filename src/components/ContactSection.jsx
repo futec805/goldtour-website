@@ -1,14 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle, CheckCircle, Navigation, Car, Bus } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
 import { sendLeadToJivo } from '../utils/jivoBridge';
+
+function getOfficeStatus(now = new Date()) {
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Europe/Moscow',
+      weekday: 'short',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false,
+    }).formatToParts(now);
+    const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+    const hour = Number(map.hour) % 24;
+    const isWorkday = map.weekday !== 'Sun'; // Matches Пн–Сб 10:00–19:00
+    return {
+      isOpen: isWorkday && hour >= 10 && hour < 19,
+      mskTime: `${String(hour).padStart(2, '0')}:${map.minute}`,
+    };
+  } catch {
+    return { isOpen: false, mskTime: '' };
+  }
+}
 
 export default function ContactSection() {
   const { t } = useLanguage();
   const { contact, company } = siteContent;
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [jivoResult, setJivoResult] = useState(null);
+  const [officeStatus, setOfficeStatus] = useState(() => getOfficeStatus());
+
+  useEffect(() => {
+    const timer = setInterval(() => setOfficeStatus(getOfficeStatus()), 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -17,17 +45,19 @@ export default function ContactSection() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.name && formData.phone) {
-      sendLeadToJivo({
+      const res = sendLeadToJivo({
         source: 'Форма обратной связи (Контакты)',
         name: formData.name,
         phone: formData.phone,
         message: formData.message || 'Запрос консультации с сайта.',
       });
+      setJivoResult(res);
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
+        setJivoResult(null);
         setFormData({ name: '', phone: '', message: '' });
-      }, 4000);
+      }, 4500);
     }
   };
 
@@ -59,9 +89,17 @@ export default function ContactSection() {
                     {t({ ru: 'Нижегородская область, Кстово / Нижний Новгород', en: 'Nizhny Novgorod Region, Kstovo' })}
                   </p>
                 </div>
-                <span className="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  {t({ ru: 'Открыто сейчас', en: 'Open Now' })}
+                <span className={`text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 ${
+                  officeStatus.isOpen
+                    ? 'bg-emerald-500/20 text-emerald-400'
+                    : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                }`}>
+                  <span className={`w-2 h-2 rounded-full ${
+                    officeStatus.isOpen ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                  }`} />
+                  {officeStatus.isOpen
+                    ? t({ ru: 'Открыто сейчас', en: 'Open Now' })
+                    : t({ ru: 'Закрыто • Онлайн 24/7', en: 'Closed • Online 24/7' })}
                 </span>
               </div>
 
@@ -275,6 +313,17 @@ export default function ContactSection() {
                       en: 'We received your message. Our duty travel manager will contact you within 10–15 minutes.'
                     })}
                   </p>
+                  {jivoResult?.formattedMessage && (
+                    <a
+                      href={`${company.whatsappUrl}?text=${encodeURIComponent(jivoResult.formattedMessage)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
+                    >
+                      <MessageCircle size={14} />
+                      {t({ ru: 'Дублировать в WhatsApp', en: 'Also send via WhatsApp' })}
+                    </a>
+                  )}
                 </div>
               )}
             </div>
