@@ -6,62 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Золотой тур — Туристическое агентство | Gold Tour Travel Agency</title>
     <meta name="description" content="Туристическое агентство «Золотой тур» в Нижнем Новгороде. Поиск туров по 80+ туроператорам. Горящие туры, пакетные туры, визы, круизы." />
-    <!-- Tourvisor Official Engine Adapter & Init -->
-    <script type="text/javascript">
-      (function() {
-        var TARGET_REF = 'https://goldtour-nn.ru/podbor-tura';
-        // Intercept fetch
-        if (window.fetch) {
-          var _fetch = window.fetch;
-          window.fetch = function(url, init) {
-            if (typeof url === 'string' && (url.indexOf('tourvisor.ru') !== -1 || url.indexOf('stat.tourvisor') !== -1)) {
-              url = url.replace(/referrer=[^&]+/, 'referrer=' + encodeURIComponent(TARGET_REF));
-            }
-            if (init && typeof init.body === 'string' && init.body.indexOf('referrer') !== -1) {
-              try {
-                var parsed = JSON.parse(init.body);
-                if (parsed.referrer !== undefined) {
-                  parsed.referrer = TARGET_REF;
-                  init.body = JSON.stringify(parsed);
-                }
-              } catch (e) {}
-            }
-            return _fetch.call(this, url, init);
-          };
-        }
-
-        // Intercept XMLHttpRequest
-        var _open = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-          if (typeof url === 'string' && (url.indexOf('tourvisor.ru') !== -1 || url.indexOf('stat.tourvisor') !== -1)) {
-            url = url.replace(/referrer=[^&]+/, 'referrer=' + encodeURIComponent(TARGET_REF));
-          }
-          this._tv_url = url;
-          return _open.call(this, method, url, async !== false, user, pass);
-        };
-
-        var _send = XMLHttpRequest.prototype.send;
-        XMLHttpRequest.prototype.send = function(body) {
-          if (typeof body === 'string' && (this._tv_url || '').indexOf('tourvisor') !== -1) {
-            if (body.indexOf('referrer=') !== -1) {
-              body = body.replace(/referrer=[^&]+/, 'referrer=' + encodeURIComponent(TARGET_REF));
-            } else {
-              try {
-                var p = JSON.parse(body);
-                if (p.referrer !== undefined) {
-                  p.referrer = TARGET_REF;
-                  body = JSON.stringify(p);
-                }
-              } catch(e) {}
-            }
-          }
-          return _send.call(this, body);
-        };
-      })();
-    </script>
-    <script type="text/javascript" src="https://tourvisor.ru/module/init.js"></script>
-    <script type="module" crossorigin src="/goldtour-website/assets/index-BagL9MKd.js"></script>
-    <link rel="stylesheet" crossorigin href="/goldtour-website/assets/index-COf3sKlL.css">
+    <!-- Tourvisor Engine Config: Initialized dynamically or loaded via seamless component frame -->
+    <script type="module" crossorigin src="/goldtour-website/assets/index-Cb5DdKT9.js"></script>
+    <link rel="stylesheet" crossorigin href="/goldtour-website/assets/index-D4tvDZhO.css">
   </head>
   <body>
     <div id="root"></div>
