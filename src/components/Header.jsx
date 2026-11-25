@@ -11,9 +11,9 @@ export default function Header() {
   const { nav, company } = siteContent;
 
   const navItems = [
-    { label: t(nav.destinations), href: '#destinations' },
     { label: t(nav.search), href: '#search' },
     { label: t(nav.quiz), href: '#quiz' },
+    { label: t(nav.destinations), href: '#destinations' },
     { label: t(nav.services), href: '#services' },
     { label: t(nav.reviews), href: '#reviews' },
     { label: t(nav.contacts), href: '#contacts' },
