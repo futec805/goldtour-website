@@ -142,11 +142,19 @@ export default function TourSearch({ onSelectTour }) {
 
   // Trigger native TV modules when on registered domain
   useEffect(() => {
-    if (isProductionDomain && window.TV && typeof window.TV.loadModules === 'function') {
-      try {
-        window.TV.loadModules();
-      } catch (e) {
-        console.warn('TV error:', e);
+    if (isProductionDomain) {
+      if (!document.getElementById('tv-init-script')) {
+        const s = document.createElement('script');
+        s.id = 'tv-init-script';
+        s.src = 'https://tourvisor.ru/module/init.js';
+        s.type = 'text/javascript';
+        document.body.appendChild(s);
+      } else if (window.TV && typeof window.TV.loadModules === 'function') {
+        try {
+          window.TV.loadModules();
+        } catch (e) {
+          console.warn('TV error:', e);
+        }
       }
     }
   }, [activeTab, isProductionDomain]);
@@ -253,31 +261,36 @@ export default function TourSearch({ onSelectTour }) {
               </div>
             </div>
 
-            {/* Embedded Live Tourvisor Engine */}
-            <div className="relative min-h-[750px] sm:min-h-[850px] w-full bg-white">
-              {!iframeLoaded && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 p-6 text-center">
-                  <div className="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mb-4" />
-                  <p className="font-heading font-bold text-navy-950 text-base mb-1">
-                    {lang === 'ru' ? 'Загрузка системы поиска туров Турвизор...' : 'Loading live Tourvisor engine...'}
-                  </p>
-                  <p className="text-xs text-slate-500 max-w-sm">
-                    {lang === 'ru' 
-                      ? 'Подключение к базам данных 80+ туроператоров и проверка актуальных чартерных рейсов'
-                      : 'Connecting to 80+ tour operators database and verifying real-time flight charters'}
-                  </p>
-                </div>
-              )}
+            {/* Tourvisor Engine: Native on goldtour-nn.ru, Component iframe on staging/GitHub */}
+            {isProductionDomain ? (
+              <div className="p-4 sm:p-6 min-h-[500px]">
+                <div className="tv-search-form tv-moduleid-9975387"></div>
+              </div>
+            ) : (
+              <div className="relative min-h-[750px] sm:min-h-[880px] w-full bg-white overflow-x-auto">
+                {!iframeLoaded && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 z-10 p-6 text-center">
+                    <div className="w-10 h-10 border-4 border-gold-500 border-t-transparent rounded-full animate-spin mb-4" />
+                    <p className="font-heading font-bold text-navy-950 text-base mb-1">
+                      {lang === 'ru' ? 'Загрузка системы поиска туров Турвизор...' : 'Loading live Tourvisor engine...'}
+                    </p>
+                    <p className="text-xs text-slate-500 max-w-sm">
+                      {lang === 'ru' 
+                        ? 'Подключение к базам данных 80+ туроператоров и проверка актуальных чартерных рейсов'
+                        : 'Connecting to 80+ tour operators database and verifying real-time flight charters'}
+                    </p>
+                  </div>
+                )}
 
-              {/* Live Tourvisor Engine Frame */}
-              <iframe
-                src="https://goldtour-nn.ru/podbor-tura"
-                title="Tourvisor Live Search Engine"
-                className="w-full h-[850px] sm:h-[950px] border-0"
-                onLoad={() => setIframeLoaded(true)}
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
-              />
-            </div>
+                {/* Live Tourvisor Engine Component Frame (No Joomla templates/headers) */}
+                <iframe
+                  src="https://goldtour-nn.ru/podbor-tura?tmpl=component"
+                  title="Tourvisor Live Search Engine"
+                  className="w-full min-h-[820px] lg:min-h-[920px] border-0"
+                  onLoad={() => setIframeLoaded(true)}
+                />
+              </div>
+            )}
 
             {/* Bottom Support Banner */}
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
