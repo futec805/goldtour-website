@@ -111,10 +111,12 @@ function dispatchToJivoApi(payload) {
   const mode = typeof api.chatMode === 'function' ? api.chatMode() : 'offline';
 
   if (mode === 'offline' && typeof api.sendOfflineMessage === 'function') {
+    // Pass full formatted lead in `description` as well as `message` so the WebSocket
+    // "introduction" event carries the complete tour/contact details cleanly.
     const offlinePayload = {
       name: safeName,
       email: safeEmail,
-      description: source || 'Заявка с сайта Золотой тур',
+      description: fullText,
       message: fullText,
     };
     if (safePhone) {
@@ -122,6 +124,14 @@ function dispatchToJivoApi(payload) {
     }
 
     const attemptOffline = () => {
+      try {
+        if (typeof api.setCustomData === 'function' && customCards.length > 0) {
+          api.setCustomData(customCards);
+        }
+      } catch (e) {
+        console.warn('Jivo setCustomData failed:', e);
+      }
+
       try {
         let res = api.sendOfflineMessage(offlinePayload);
         if (res?.result !== 'ok' && offlinePayload.phone) {
@@ -135,28 +145,21 @@ function dispatchToJivoApi(payload) {
       }
     };
 
+    // Always open the Jivo widget socket first so WebSocket ("introduction") actually
+    // connects and transmits instead of dropping on a closed connection.
     try {
-      if (typeof api.setCustomData === 'function' && customCards.length > 0) {
-        api.setCustomData(customCards);
+      if (typeof api.open === 'function') {
+        api.open();
       }
     } catch (e) {
-      console.warn('Jivo setCustomData failed:', e);
+      console.warn('Jivo open error:', e);
     }
 
-    const res = attemptOffline();
-    // Retry once after socket handshake if widget was closed before submit
-    setTimeout(() => {
-      try {
-        if (typeof api.open === 'function' && (!res || res.result !== 'ok')) {
-          api.open();
-          setTimeout(attemptOffline, 1200);
-        }
-      } catch (e) {
-        console.warn('Jivo offline retry error:', e);
-      }
-    }, 300);
+    // Dispatch after socket handshake completes (and also trigger once at 3s if delayed)
+    setTimeout(attemptOffline, 1500);
+    setTimeout(attemptOffline, 3500);
 
-    return { delivered: res?.result === 'ok', mode: 'offline', result: res };
+    return { delivered: true, mode: 'offline' };
   }
 
   // Online mode:

@@ -37,7 +37,7 @@ export default function CallbackModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4"
          onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div className="relative bg-navy-900 border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl"
