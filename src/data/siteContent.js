@@ -19,6 +19,9 @@ export const siteContent = {
     workingHours: { ru: 'Пн–Сб 10:00–19:00', en: 'Mon–Sat 10:00–19:00' },
     telegramUrl: 'https://t.me/goldtour_nn',
     whatsappUrl: 'https://wa.me/79601892464',
+    maxPhone: '+7 (910) 393-46-55',
+    maxPhoneRaw: '+79103934655',
+    maxUrl: 'https://web.max.ru/',
     tourvisorId: '223415',
     tourvisorSearchId: '9975387',
     tourvisorHeroSearchId: '9975388',
@@ -470,7 +473,7 @@ export const siteContent = {
 3. Цели обработки
 3.1. Персональные данные собираются исключительно для:
 - Обработки заявок на подбор и бронирование туристических путевок;
-- Связи с Пользователем в мессенджерах (WhatsApp, Telegram) и по телефону;
+- Связи с Пользователем в мессенджерах (WhatsApp, Telegram, MAX) и по телефону;
 - Оформления договоров оказания туристических услуг.`,
       en: `This Privacy Policy applies to all information that Travel Agency "Gold Tour" may obtain about the User during their use of the website.
 
@@ -489,7 +492,7 @@ export const siteContent = {
 3. Purposes of Processing
 3.1. Data is collected solely for:
 - Processing requests for tour selection and bookings;
-- Communicating via messengers (WhatsApp, Telegram) and telephone;
+- Communicating via messengers (WhatsApp, Telegram, MAX) and telephone;
 - Executing travel service contracts.`
     },
     fz152Title: { ru: 'Положение об обработке данных (152-ФЗ РФ)', en: 'Personal Data Regulation (152-FZ RF)' },

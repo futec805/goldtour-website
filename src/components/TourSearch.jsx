@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, MapPin, Calendar, Users, Moon, Sparkles, Filter, Check, Plane, Star, ArrowRight, ExternalLink, RefreshCw } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, Moon, Sparkles, Filter, Check, Plane, Star, ArrowRight, ExternalLink, RefreshCw, MessageSquare } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
+import { copyMaxNumber } from '../utils/maxMessenger';
 
 const BASE = import.meta.env.BASE_URL ? (import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`) : '/';
 
@@ -126,6 +127,14 @@ export default function TourSearch({ onSelectTour }) {
   const { t, lang } = useLanguage();
   const [activeTab, setActiveTab] = useState('tourvisor'); // Default: Live Tourvisor Engine
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [maxCopied, setMaxCopied] = useState(false);
+
+  const handleMaxClick = () => {
+    copyMaxNumber(siteContent.company.maxPhoneRaw, () => {
+      setMaxCopied(true);
+      setTimeout(() => setMaxCopied(false), 3000);
+    });
+  };
 
   // Quick Filter state for Tab 2
   const [departure, setDeparture] = useState('nn');
@@ -312,14 +321,36 @@ export default function TourSearch({ onSelectTour }) {
                   ? '💡 Нашли подходящий тур? Забронируйте онлайн или свяжитесь с менеджером «Золотой тур» по тел. +7 (960) 189-24-64'
                   : '💡 Found a tour? Book online or call Gold Tour manager directly at +7 (960) 189-24-64'}
               </span>
-              <a 
-                href={siteContent.company.whatsappUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold whitespace-nowrap shadow-sm transition-all"
-              >
-                WhatsApp +7 (960) 189-24-64
-              </a>
+              <div className="flex flex-wrap items-center justify-center gap-2 shrink-0">
+                <a 
+                  href={siteContent.company.whatsappUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold whitespace-nowrap shadow-sm transition-all"
+                >
+                  WhatsApp +7 (960) 189-24-64
+                </a>
+                <a 
+                  href={siteContent.company.telegramUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-bold whitespace-nowrap shadow-sm transition-all"
+                >
+                  Telegram
+                </a>
+                <a 
+                  href={siteContent.company.maxUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={handleMaxClick}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold whitespace-nowrap shadow-sm transition-all"
+                >
+                  <MessageSquare size={14} className="shrink-0" />
+                  {maxCopied
+                    ? (lang === 'ru' ? 'Номер MAX скопирован!' : 'MAX copied!')
+                    : `MAX ${siteContent.company.maxPhone}`}
+                </a>
+              </div>
             </div>
 
           </div>

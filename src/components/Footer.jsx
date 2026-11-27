@@ -1,11 +1,21 @@
-import { Send, MessageCircle, Phone, Mail, Shield, MapPin, Heart } from 'lucide-react';
+import { useState } from 'react';
+import { Send, MessageCircle, MessageSquare, Phone, Mail, Shield, MapPin, Heart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
+import { copyMaxNumber } from '../utils/maxMessenger';
 import logoImg from '../assets/logo.png';
 
 export default function Footer({ onOpenLegal }) {
   const { t } = useLanguage();
   const { footer, company, nav } = siteContent;
+  const [maxCopied, setMaxCopied] = useState(false);
+
+  const handleMaxClick = () => {
+    copyMaxNumber(company.maxPhoneRaw, () => {
+      setMaxCopied(true);
+      setTimeout(() => setMaxCopied(false), 3000);
+    });
+  };
 
   const quickLinks = [
     { label: t(nav.search), href: '#search' },
@@ -119,6 +129,20 @@ export default function Footer({ onOpenLegal }) {
                 className="flex items-center gap-2.5 bg-white/5 hover:bg-sky-600/20 border border-white/10 hover:border-sky-500/40 text-white/80 hover:text-sky-300 p-2.5 rounded-xl transition-all text-xs font-medium"
               >
                 <Send size={16} className="text-sky-400" /> Telegram Channel & Bot
+              </a>
+              <a
+                href={company.maxUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleMaxClick}
+                className="flex items-center gap-2.5 bg-white/5 hover:bg-indigo-600/20 border border-white/10 hover:border-indigo-500/40 text-white/80 hover:text-indigo-300 p-2.5 rounded-xl transition-all text-xs font-medium"
+              >
+                <MessageSquare size={16} className="text-indigo-400 shrink-0" />
+                <span>
+                  {maxCopied
+                    ? t({ ru: 'Номер MAX скопирован!', en: 'MAX number copied!' })
+                    : `MAX: ${company.maxPhone}`}
+                </span>
               </a>
             </div>
           </div>

@@ -1,15 +1,24 @@
 import { useState } from 'react';
-import { Menu, X, Phone, MessageCircle, Send } from 'lucide-react';
+import { Menu, X, Phone, MessageCircle, Send, MessageSquare } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
 import CallbackModal from './CallbackModal';
+import { copyMaxNumber } from '../utils/maxMessenger';
 import logoImg from '../assets/logo.png';
 
 export default function Header() {
   const { lang, toggleLang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [callbackOpen, setCallbackOpen] = useState(false);
+  const [maxCopied, setMaxCopied] = useState(false);
   const { nav, company } = siteContent;
+
+  const handleMaxCopied = () => {
+    copyMaxNumber(company.maxPhoneRaw, () => {
+      setMaxCopied(true);
+      setTimeout(() => setMaxCopied(false), 2500);
+    });
+  };
 
   const navItems = [
     { label: t(nav.search), href: '#search' },
@@ -37,6 +46,12 @@ export default function Header() {
             <a href={company.telegramUrl} target="_blank" rel="noopener noreferrer"
                className="flex items-center gap-1.5 hover:text-sky-400 transition-colors">
               <Send size={14} /> Telegram
+            </a>
+            <a href={company.maxUrl} target="_blank" rel="noopener noreferrer"
+               onClick={handleMaxCopied}
+               title={t({ ru: `Открыть MAX и скопировать ${company.maxPhone}`, en: `Open MAX & copy ${company.maxPhone}` })}
+               className="flex items-center gap-1.5 hover:text-violet-400 transition-colors">
+              <MessageSquare size={14} /> {maxCopied ? t({ ru: 'MAX скопирован!', en: 'MAX copied!' }) : `MAX ${company.maxPhone}`}
             </a>
             <a href={`tel:${company.phone}`} className="flex items-center gap-1.5 hover:text-gold-400 transition-colors">
               <Phone size={14} /> {company.phone}
@@ -102,14 +117,19 @@ export default function Header() {
                 {item.label}
               </a>
             ))}
-            <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+            <div className="grid grid-cols-3 gap-2 pt-4 border-t border-white/10">
               <a href={company.whatsappUrl} target="_blank" rel="noopener noreferrer"
-                 className="flex-1 flex items-center justify-center gap-2 bg-green-600 text-white py-2.5 rounded-full font-medium text-sm">
-                <MessageCircle size={16} /> WhatsApp
+                 className="flex items-center justify-center gap-1.5 bg-green-600 text-white py-2.5 rounded-full font-medium text-xs">
+                <MessageCircle size={15} /> WhatsApp
               </a>
               <a href={company.telegramUrl} target="_blank" rel="noopener noreferrer"
-                 className="flex-1 flex items-center justify-center gap-2 bg-sky-500 text-white py-2.5 rounded-full font-medium text-sm">
-                <Send size={16} /> Telegram
+                 className="flex items-center justify-center gap-1.5 bg-sky-500 text-white py-2.5 rounded-full font-medium text-xs">
+                <Send size={15} /> Telegram
+              </a>
+              <a href={company.maxUrl} target="_blank" rel="noopener noreferrer"
+                 onClick={handleMaxCopied}
+                 className="flex items-center justify-center gap-1.5 bg-violet-600 text-white py-2.5 rounded-full font-medium text-xs">
+                <MessageSquare size={15} /> MAX
               </a>
             </div>
             <button onClick={() => { setCallbackOpen(true); setMobileOpen(false); }}

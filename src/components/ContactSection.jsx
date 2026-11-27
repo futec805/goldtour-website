@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle, CheckCircle, Navigation, Car, Bus } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, MessageCircle, MessageSquare, CheckCircle, Navigation, Car, Bus } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteContent } from '../data/siteContent';
 import { sendLeadToJivo } from '../utils/jivoBridge';
+import { copyMaxNumber } from '../utils/maxMessenger';
 
 function getOfficeStatus(now = new Date()) {
   try {
@@ -31,6 +32,14 @@ export default function ContactSection() {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [officeStatus, setOfficeStatus] = useState(() => getOfficeStatus());
+  const [maxCopied, setMaxCopied] = useState(false);
+
+  const handleMaxClick = () => {
+    copyMaxNumber(company.maxPhoneRaw, () => {
+      setMaxCopied(true);
+      setTimeout(() => setMaxCopied(false), 3000);
+    });
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setOfficeStatus(getOfficeStatus()), 60000);
@@ -148,24 +157,39 @@ export default function ContactSection() {
               </div>
 
               {/* Direct messengers buttons */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <div className="pt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <a
                   href={company.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white py-3 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-green-600/20"
+                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white py-3 px-3 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-green-600/20 text-center"
                 >
-                  <MessageCircle size={18} />
-                  {t({ ru: 'Написать в WhatsApp', en: 'Message on WhatsApp' })}
+                  <MessageCircle size={18} className="shrink-0" />
+                  <span>{t({ ru: 'WhatsApp', en: 'WhatsApp' })}</span>
                 </a>
                 <a
                   href={company.telegramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 text-white py-3 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-sky-500/20"
+                  className="flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 text-white py-3 px-3 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-sky-500/20 text-center"
                 >
-                  <Send size={18} />
-                  {t({ ru: 'Написать в Telegram', en: 'Message on Telegram' })}
+                  <Send size={18} className="shrink-0" />
+                  <span>{t({ ru: 'Telegram', en: 'Telegram' })}</span>
+                </a>
+                <a
+                  href={company.maxUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleMaxClick}
+                  className="flex flex-col items-center justify-center gap-0.5 bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 px-3 rounded-2xl font-semibold text-sm transition-all shadow-lg shadow-indigo-600/20 text-center"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <MessageSquare size={17} className="shrink-0" />
+                    <span>{maxCopied ? t({ ru: 'Скопировано!', en: 'Copied!' }) : 'MAX'}</span>
+                  </span>
+                  <span className="text-[11px] font-medium text-indigo-100 leading-tight">
+                    {company.maxPhone}
+                  </span>
                 </a>
               </div>
             </div>
