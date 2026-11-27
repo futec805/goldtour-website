@@ -7,7 +7,7 @@ export default function Reviews() {
   const { reviews } = siteContent;
 
   return (
-    <section id="reviews" className="scroll-mt-20 py-20 bg-white">
+    <section id="reviews" className="scroll-mt-20 py-20 bg-slate-50 border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="font-heading font-bold text-3xl sm:text-4xl text-navy-950 mb-3">
@@ -21,7 +21,7 @@ export default function Reviews() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {reviews.items.map((review, i) => (
             <div key={i}
-                 className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:shadow-lg transition-shadow relative">
+                 className="bg-white rounded-2xl p-6 border border-slate-200 hover:shadow-lg transition-shadow relative">
               <Quote size={32} className="text-gold-200 absolute top-4 right-4" />
 
               <div className="flex gap-1 mb-4">

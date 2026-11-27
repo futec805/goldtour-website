@@ -7,7 +7,6 @@ import PopularDestinations from './components/PopularDestinations';
 import HotTours from './components/HotTours';
 import Services from './components/Services';
 import HowWeWork from './components/HowWeWork';
-import WhyChooseUs from './components/WhyChooseUs';
 import Reviews from './components/Reviews';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
@@ -40,7 +39,6 @@ function App() {
       <HotTours onSelectTour={handleSelectTour} />
       <Services onSelectTour={handleSelectTour} />
       <HowWeWork />
-      <WhyChooseUs />
       <Reviews />
       <ContactSection />
       <Footer onOpenLegal={handleOpenLegal} />

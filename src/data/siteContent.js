@@ -335,45 +335,6 @@ export const siteContent = {
     ],
   },
 
-  // ─── Why Choose Us ───
-  whyChooseUs: {
-    sectionTitle: { ru: 'Почему выбирают «Золотой тур»', en: 'Why Choose Gold Tour' },
-    items: [
-      {
-        title: { ru: '80+ проверенных операторов', en: '80+ Verified Operators' },
-        description: {
-          ru: 'Работаем с Coral Travel, Pegas, Anex Tour, Fun&Sun, Biblio Globus и другими лидерами рынка',
-          en: 'Partnered with Coral Travel, Pegas, Anex Tour, Fun&Sun, Biblio Globus and other market leaders',
-        },
-        icon: 'ShieldCheck',
-      },
-      {
-        title: { ru: 'Честные цены без доплат', en: 'Transparent Pricing' },
-        description: {
-          ru: 'Никаких скрытых комиссий и топливных сборов — вы платите ровно столько, сколько видите',
-          en: 'No hidden commissions or fuel surcharges — you pay exactly what you see',
-        },
-        icon: 'BadgeRussianRuble',
-      },
-      {
-        title: { ru: 'Менеджер 24/7 в мессенджере', en: '24/7 Manager on Messenger' },
-        description: {
-          ru: 'Персональный менеджер доступен в WhatsApp и Telegram от бронирования до возвращения',
-          en: 'Personal manager available on WhatsApp & Telegram from booking until return',
-        },
-        icon: 'MessageCircle',
-      },
-      {
-        title: { ru: 'Опыт более 5 лет', en: '5+ Years Experience' },
-        description: {
-          ru: 'Каждый сотрудник работает в сфере туризма более 5 лет и имеет профильное образование',
-          en: 'Every team member has 5+ years in tourism with professional education & certifications',
-        },
-        icon: 'Award',
-      },
-    ],
-  },
-
   // ─── Reviews ───
   reviews: {
     sectionTitle: { ru: 'Отзывы наших туристов', en: 'Our Travelers\' Reviews' },
