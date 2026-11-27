@@ -348,8 +348,8 @@ export const siteContent = {
         destination: { ru: 'Египет, Хургада', en: 'Egypt, Hurghada' },
         rating: 5,
         text: {
-          ru: 'Потрясающий отдых! Менеджер Екатерина подобрала идеальный отель для нас с детьми. Всё включено, отличный пляж, дети в восторге от аквапарка. Спасибо «Золотому туру»!',
-          en: 'Amazing vacation! Manager Ekaterina selected the perfect hotel for our family with kids. All inclusive, great beach, kids loved the waterpark. Thank you Gold Tour!',
+          ru: 'Потрясающий отдых! Менеджер Ирина подобрала идеальный отель для нас с детьми. Всё включено, отличный пляж, дети в восторге от аквапарка. Спасибо «Золотому туру»!',
+          en: 'Amazing vacation! Manager Irina selected the perfect hotel for our family with kids. All inclusive, great beach, kids loved the waterpark. Thank you Gold Tour!',
         },
         date: { ru: 'Октябрь 2024', en: 'October 2024' },
       },
