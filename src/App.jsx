@@ -9,7 +9,6 @@ import Services from './components/Services';
 import HowWeWork from './components/HowWeWork';
 import WhyChooseUs from './components/WhyChooseUs';
 import Reviews from './components/Reviews';
-import HotToursCta from './components/HotToursCta';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import BookingModal from './components/BookingModal';
@@ -39,7 +38,6 @@ function App() {
       <TourSearch onSelectTour={handleSelectTour} />
       <PopularDestinations onSelectTour={handleSelectTour} />
       <HotTours onSelectTour={handleSelectTour} />
-      <HotToursCta />
       <Services onSelectTour={handleSelectTour} />
       <HowWeWork />
       <WhyChooseUs />

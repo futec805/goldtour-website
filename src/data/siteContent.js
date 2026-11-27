@@ -467,20 +467,6 @@ export const siteContent = {
     },
   },
 
-  // ─── Hot Tours CTA ───
-  hotToursCta: {
-    title: {
-      ru: 'Подключитесь к ленте горящих туров',
-      en: 'Subscribe to Hot Tour Updates',
-    },
-    subtitle: {
-      ru: 'Получайте лучшие предложения с максимальными скидками прямо в свой мессенджер',
-      en: 'Get the best deals with maximum discounts directly in your messenger',
-    },
-    telegramButton: { ru: 'Подписаться в Telegram', en: 'Subscribe on Telegram' },
-    whatsappButton: { ru: 'Подписаться в WhatsApp', en: 'Subscribe on WhatsApp' },
-  },
-
   // ─── Booking Modal ───
   bookingModal: {
     title: { ru: 'Бронирование тура', en: 'Book This Tour' },
