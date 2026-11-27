@@ -9,7 +9,6 @@ export default function Footer({ onOpenLegal }) {
 
   const quickLinks = [
     { label: t(nav.search), href: '#search' },
-    { label: t(nav.quiz), href: '#quiz' },
     { label: t(nav.destinations), href: '#destinations' },
     { label: t(nav.services), href: '#services' },
     { label: t(nav.reviews), href: '#reviews' },

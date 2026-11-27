@@ -27,7 +27,6 @@ export const siteContent = {
   // ─── Navigation ───
   nav: {
     search: { ru: 'Поиск туров', en: 'Tour Search' },
-    quiz: { ru: 'Подобрать тур', en: 'Tour Finder' },
     destinations: { ru: 'Направления', en: 'Destinations' },
     guide: { ru: 'Путеводитель', en: 'City Guide' },
     services: { ru: 'Услуги', en: 'Services' },
@@ -48,7 +47,7 @@ export const siteContent = {
       en: 'Search tours from 80+ trusted operators with direct flights from Nizhny Novgorod & Moscow',
     },
     ctaSearch: { ru: 'Найти тур онлайн', en: 'Search Tours Online' },
-    ctaQuiz: { ru: 'Пройти квиз', en: 'Take the Quiz' },
+    ctaDestinations: { ru: 'Страны и курорты', en: 'Explore Destinations' },
   },
 
   // ─── Trust Bar ───
@@ -71,66 +70,6 @@ export const siteContent = {
         label: { ru: 'Скрытых комиссий', en: 'Hidden Fees' },
       },
     ],
-  },
-
-  // ─── Tour Quiz ───
-  quiz: {
-    sectionTitle: { ru: 'Подберите тур за 1 минуту', en: 'Find Your Tour in 1 Minute' },
-    sectionSubtitle: {
-      ru: 'Ответьте на 4 простых вопроса и получите 3 лучших варианта отдыха в WhatsApp или Telegram за 15 минут',
-      en: 'Answer 4 simple questions and receive 3 best vacation options on WhatsApp or Telegram in 15 minutes',
-    },
-    steps: [
-      {
-        question: { ru: 'Какой отдых вы предпочитаете?', en: 'What type of vacation do you prefer?' },
-        options: [
-          { label: { ru: 'Пляж и море', en: 'Beach & Sea' }, icon: '🏖️' },
-          { label: { ru: 'Семейный отдых', en: 'Family Vacation' }, icon: '👨‍👩‍👧‍👦' },
-          { label: { ru: 'Романтическое путешествие', en: 'Romantic Getaway' }, icon: '💑' },
-          { label: { ru: 'Всё включено / релакс', en: 'All Inclusive / Relax' }, icon: '🍹' },
-        ],
-      },
-      {
-        question: { ru: 'Куда хотите поехать?', en: 'Where would you like to go?' },
-        options: [
-          { label: { ru: 'Египет', en: 'Egypt' }, icon: '🇪🇬' },
-          { label: { ru: 'Турция', en: 'Turkey' }, icon: '🇹🇷' },
-          { label: { ru: 'ОАЭ', en: 'UAE' }, icon: '🇦🇪' },
-          { label: { ru: 'Таиланд', en: 'Thailand' }, icon: '🇹🇭' },
-          { label: { ru: 'Мальдивы', en: 'Maldives' }, icon: '🇲🇻' },
-          { label: { ru: 'Не определился', en: 'Not sure yet' }, icon: '🌍' },
-        ],
-      },
-      {
-        question: { ru: 'Ваш бюджет на человека?', en: 'Your budget per person?' },
-        options: [
-          { label: { ru: 'До 60 000 ₽', en: 'Up to 60,000 ₽' }, icon: '💰' },
-          { label: { ru: '60 000 – 120 000 ₽', en: '60,000 – 120,000 ₽' }, icon: '💰💰' },
-          { label: { ru: '120 000 – 200 000 ₽', en: '120,000 – 200,000 ₽' }, icon: '💰💰💰' },
-          { label: { ru: 'VIP без ограничений', en: 'VIP No Limit' }, icon: '👑' },
-        ],
-      },
-      {
-        question: { ru: 'Куда отправить подборку?', en: 'Where should we send the options?' },
-        options: [
-          { label: { ru: 'WhatsApp', en: 'WhatsApp' }, icon: '📱' },
-          { label: { ru: 'Telegram', en: 'Telegram' }, icon: '✈️' },
-          { label: { ru: 'Позвоните мне', en: 'Call me' }, icon: '📞' },
-        ],
-      },
-    ],
-    contactPlaceholder: {
-      ru: 'Введите номер телефона',
-      en: 'Enter your phone number',
-    },
-    submitButton: {
-      ru: 'Получить подборку бесплатно',
-      en: 'Get Free Recommendations',
-    },
-    successMessage: {
-      ru: 'Спасибо! Наш менеджер свяжется с вами в течение 15 минут 🎉',
-      en: 'Thank you! Our manager will contact you within 15 minutes 🎉',
-    },
   },
 
   // ─── Destinations ───

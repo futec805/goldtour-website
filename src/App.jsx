@@ -3,7 +3,6 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import TrustBar from './components/TrustBar';
 import TourSearch from './components/TourSearch';
-import TourQuiz from './components/TourQuiz';
 import PopularDestinations from './components/PopularDestinations';
 import HotTours from './components/HotTours';
 import Services from './components/Services';
@@ -38,7 +37,6 @@ function App() {
       <Hero />
       <TrustBar />
       <TourSearch onSelectTour={handleSelectTour} />
-      <TourQuiz />
       <PopularDestinations onSelectTour={handleSelectTour} />
       <HotTours onSelectTour={handleSelectTour} />
       <HotToursCta />

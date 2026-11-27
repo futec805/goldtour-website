@@ -116,9 +116,9 @@ export default function Hero() {
              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-navy-950 font-bold text-lg px-8 py-4 rounded-full transition-all shadow-xl shadow-gold-500/30 hover:scale-105">
             {t(hero.ctaSearch)}
           </a>
-          <a href="#quiz"
+          <a href="#destinations"
              className="inline-flex items-center justify-center gap-2 border-2 border-white/30 hover:border-gold-400 bg-navy-950/30 backdrop-blur-sm text-white hover:text-gold-400 font-bold text-lg px-8 py-4 rounded-full transition-all hover:scale-105">
-            {t(hero.ctaQuiz)}
+            {t(hero.ctaDestinations)}
           </a>
         </div>
       </div>
